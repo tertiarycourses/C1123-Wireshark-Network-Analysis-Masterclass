@@ -1,0 +1,17 @@
+{
+  "capture": "branch-office.pcap",
+  "checks": [
+    {
+      "filter": "http.response.code >= 400",
+      "count": 2
+    },
+    {
+      "filter": "http2.type == 4",
+      "count": 1,
+      "decode": [
+        "-d",
+        "tcp.port==8080,http2"
+      ]
+    }
+  ]
+}

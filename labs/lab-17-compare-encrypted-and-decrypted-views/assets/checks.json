@@ -1,0 +1,23 @@
+{
+  "capture": "tls-session.pcap",
+  "checks": [
+    {
+      "filter": "tls.handshake.type == 1",
+      "count": 1
+    },
+    {
+      "filter": "http.request",
+      "count": 0
+    },
+    {
+      "filter": "http.request",
+      "count": 1,
+      "keylog": true
+    },
+    {
+      "filter": "http.response.code == 200",
+      "count": 1,
+      "keylog": true
+    }
+  ]
+}

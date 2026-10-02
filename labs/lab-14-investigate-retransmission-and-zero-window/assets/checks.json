@@ -1,0 +1,17 @@
+{
+  "capture": "branch-office.pcap",
+  "checks": [
+    {
+      "filter": "tcp.analysis.retransmission",
+      "count": 1
+    },
+    {
+      "filter": "tcp.analysis.zero_window",
+      "count": 1
+    },
+    {
+      "filter": "tcp.flags.reset == 1",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "capture": "branch-office.pcap",
+  "checks": [
+    {
+      "filter": "dns.qry.name == \"portal.example.test\"",
+      "count": 2
+    }
+  ]
+}
