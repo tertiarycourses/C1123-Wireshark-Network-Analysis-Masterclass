@@ -207,4 +207,3 @@ TOPIC_SLIDES={
     ('text_image','Export and Preserve Evidence',['File > Export Specified Packets saves only the relevant frames.','Export Packet Dissections produces text/CSV for reports.','Keep the original capture unchanged and record its hash.'],D+'ref-248.png','File | Export Packet Dissections','EVIDENCE'),
     ('cards3','Writing the Incident Report',[('Observed facts',['Frame numbers','Filters used','Measured times and counts']),('Interpretation',['What the evidence suggests','Alternative explanations','Confidence level']),('Next actions',['Further captures needed','Owner and system to check','Limitations of this trace'])],'REPORTING')],
 }
-
