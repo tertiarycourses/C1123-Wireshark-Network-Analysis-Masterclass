@@ -610,15 +610,20 @@ def shot(title,img,kicker=None,caption=""):
 def text_image(title,items,img,kicker=None,caption="",accent=BLUE):
     """Concept bullets on the left, a framed undistorted diagram/screenshot on the right."""
     s=head(slide(),title,kicker,kcolor=accent)
-    bullets(s,Inches(0.85),Inches(2.05),Inches(5.0),Inches(4.6),items,size=16,color=_ink(),gap=12,mcolor=accent)
     with Image.open(img) as im: iw,ih=im.size
-    maxw,maxh=Inches(6.45),Inches(4.35)
+    if iw/ih > 2.0:
+        # Wide diagram: text across the top, image full width underneath.
+        bullets(s,Inches(0.85),Inches(1.98),Inches(11.6),Inches(1.5),items,size=15,color=_ink(),gap=4,mcolor=accent)
+        bx,by,maxw,maxh=Inches(0.85),Inches(3.55),Inches(11.6),Inches(2.85)
+    else:
+        bullets(s,Inches(0.85),Inches(2.05),Inches(4.45),Inches(4.6),items,size=16,color=_ink(),gap=12,mcolor=accent)
+        bx,by,maxw,maxh=Inches(5.5),Inches(2.0),Inches(7.0),Inches(4.45)
     sc=min(maxw/iw,maxh/ih); W=int(iw*sc); H=int(ih*sc)
-    x=int(Inches(6.1)+(maxw-W)/2); y=int(Inches(2.05)+(maxh-H)/2)
+    x=int(bx+(maxw-W)/2); y=int(by+(maxh-H)/2)
     rect(s,x-Inches(0.06),y-Inches(0.06),W+Inches(0.12),H+Inches(0.12),_line())
     s.shapes.add_picture(img,x,y,width=W,height=H)
     if caption:
-        txt(s,Inches(6.1),Inches(6.5),maxw,Inches(0.4),[[(caption,11,_grey(),False)]],align=PP_ALIGN.CENTER)
+        txt(s,bx,Inches(6.55),maxw,Inches(0.4),[[(caption,11,_grey(),False)]],align=PP_ALIGN.CENTER)
     footer(s); return s
 def test_slide(act_title,text,kicker):
     s=head(slide(),act_title,kicker,TEAL)
@@ -864,6 +869,19 @@ for t in C.TOPICS:
         cards3(f"Hands-On Labs — {t['title']}", cards, kicker="WHAT YOU'LL DO")
     # per activity
     for a in acts:
+        _brief=getattr(C,"LAB_BRIEFS",{}).get(a["num"])
+        if _brief and not getattr(C,"LAB_STEPS_IN_DECK",True):
+            # Deck shows the scenario and a summary only; full steps live in the LG and lab instructions.
+            activity_overview(f"LAB {a['num']}", a["title"], _brief["scenario"], _brief["produce"], a["services"],
+                              kicker=f"TOPIC {t['code']} · LAB SCENARIO")
+            _sm=flow_h(f"Lab {a['num']} — What You'll Do", _brief["tasks"], kicker=f"LAB {a['num']} · SUMMARY", color=TEAL)
+            txt(_sm,Inches(0.85),Inches(6.3),Inches(11.6),Inches(0.5),
+                [[("Full step-by-step instructions:  ",13,_grey(),True),
+                  (f"Learner Guide · labs/lab-{a['num']:02d}-{C.LAB_SLUGS[a['num']]}/LAB-{a['num']:02d}-Instructions.pdf",13,_acc(BLUE),True)]],
+                align=PP_ALIGN.CENTER)
+            _lab_extras(a["num"])
+            test_slide(a["title"], a["test"], kicker=f"LAB {a['num']} · VERIFY")
+            continue
         activity_overview(f"LAB {a['num']}", a["title"], a["desc"], a["build"], a["services"], kicker=f"TOPIC {t['code']} · HANDS-ON")
         _lab_extras(a["num"])
         # The deck never shows YouTube reference links — videos live in the labs/ READMEs only.

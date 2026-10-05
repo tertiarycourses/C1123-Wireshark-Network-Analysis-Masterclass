@@ -1,6 +1,6 @@
 # Wireshark Network Analysis Masterclass — Learner Guide
 
-**Course Code:** C1123  |  **Conducted by:** Tertiary Infotech Academy Pte Ltd (UEN 201200696W)  |  **Version v5.0 · 5 October 2026**
+**Course Code:** C1123  |  **Conducted by:** Tertiary Infotech Academy Pte Ltd (UEN 201200696W)  |  **Version v5.1 · 5 October 2026**
 
 ## Contents
 
@@ -44,6 +44,7 @@
 - [Topic 18 — Ten Troubleshooting Steps and Reporting](#topic-18--ten-troubleshooting-steps-and-reporting)
   - [Lab 18 — Produce an evidence-led incident report](#lab-18--produce-an-evidence-led-incident-report)
 - [Next Steps](#next-steps)
+- [Further Learning](#further-learning)
 - [Glossary](#glossary)
 
 
@@ -143,6 +144,12 @@ The supplied arp expression matches 2 frame(s) in the specified capture. Run scr
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y arp
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -151,7 +158,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-01-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+Getting Started lab — capture your own short baseline on an authorised network and compare its protocol mix with this file. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-01-establish-a-trace-baseline/LAB-01-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -212,6 +223,12 @@ The supplied tcp.port == 80 expression matches 37 frame(s) in the specified capt
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -D
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -220,7 +237,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-02-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+Getting Started lab — list your interfaces and identify which one carries traffic before planning a capture. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-02-plan-capture-placement/LAB-02-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -281,6 +302,12 @@ The supplied dns expression matches 6 frame(s) in the specified capture. Run scr
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y dns -T fields -e frame.number -e ip.src -e ip.dst -e dns.qry.name
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -289,7 +316,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-03-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+Export your C1123-Analyst profile folder and import it on a second machine; confirm the columns appear.
+
+> **Note:** Printable copy: labs/lab-03-create-an-analyst-profile/LAB-03-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -350,6 +381,12 @@ The supplied http.response.code >= 400 expression matches 2 frame(s) in the spec
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y "http.response.code >= 400" -T fields -e frame.number -e http.response.code -e http.request_in -e http.time
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -358,7 +395,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-04-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+HTTP lab — apply your LAB HTTP Error rule to the HTTP trace from the Kurose & Ross labs. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-04-color-and-annotate-evidence/LAB-04-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -419,6 +460,12 @@ The supplied http.request.uri == "/slow" || http.response.code == 200 expression
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y "tcp.stream == 1 && http.time" -T fields -e frame.number -e tcp.analysis.initial_rtt -e http.time
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -427,7 +474,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-05-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+TCP lab — measure the initial RTT and response times in the TCP trace supplied with the Kurose & Ross labs. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-05-separate-path-and-server-delay/LAB-05-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -488,6 +539,12 @@ The supplied sip expression matches 2 frame(s) in the specified capture. Run scr
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -q -z io,phs
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -496,7 +553,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-06-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+Analyse a longer SIP/RTP call from the Wireshark sample captures (wiki.wireshark.org/SampleCaptures) with Telephony > VoIP Calls.
+
+> **Note:** Printable copy: labs/lab-06-summarize-traffic-and-a-voice-stream/LAB-06-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -557,6 +618,12 @@ The supplied dns.flags.rcode == 3 expression matches 1 frame(s) in the specified
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y "dns.flags.rcode == 3"
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -565,7 +632,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-07-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+Rewrite two of your matrix filters with the set (in {…}) and matches operators and confirm the frame lists are unchanged.
+
+> **Note:** Printable copy: labs/lab-07-build-a-filter-evidence-matrix/LAB-07-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -626,6 +697,12 @@ The supplied dns.qry.name == "portal.example.test" expression matches 2 frame(s)
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y "arp || dns.id == 0x0065 || tcp.stream == 0"
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -634,7 +711,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-08-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+Ethernet and ARP lab — trace the dependency chain for a page you load on an authorised network. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-08-reconstruct-an-application-dependency-chain/LAB-08-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -695,6 +776,12 @@ The supplied dns.flags.rcode == 3 expression matches 1 frame(s) in the specified
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y "dns.flags.response == 1" -T fields -e dns.id -e dns.qry.name -e dns.flags.rcode -e dns.time
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -703,7 +790,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-09-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+DNS lab — compare A, NS and MX lookups in the DNS trace from the Kurose & Ross labs. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-09-diagnose-dns-failure-and-delay/LAB-09-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -760,6 +851,12 @@ The supplied arp.opcode == 2 expression matches 1 frame(s) in the specified capt
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y arp -T fields -e arp.opcode -e arp.src.proto_ipv4 -e arp.src.hw_mac
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -768,7 +865,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-10-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+Ethernet and ARP lab — read the ARP cache on your own machine (arp -a) and match it to captured replies. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-10-verify-link-local-resolution/LAB-10-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -829,6 +930,12 @@ The supplied ip.dst == 224.0.0.1 expression matches 1 frame(s) in the specified 
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y "ip.dst == 224.0.0.1" -T fields -e eth.dst -e ip.dst -e ip.ttl
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -837,7 +944,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-11-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+IP lab — study TTL and fragmentation in the traceroute trace from the Kurose & Ross labs. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-11-classify-ipv4-scope-and-headers/LAB-11-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -851,6 +962,10 @@ Interpret echo and unreachable messages
 - Echo requests/replies show an IP exchange; they do not guarantee an application works.
 - Destination unreachable messages quote the offending datagram.
 - ICMP may be filtered or rate-limited, so absence of a reply needs cautious interpretation.
+
+![Echo, Refusal and Reset in the Lab Capture — Frames 9–16 and 55–56](courseware/assets/visuals/ladder-icmp-udp.png)
+
+*Echo, Refusal and Reset in the Lab Capture — Frames 9–16 and 55–56*
 
 
 ### Lab 12 — Interpret echo and unreachable messages
@@ -894,6 +1009,12 @@ The supplied icmp.type == 3 && icmp.code == 3 expression matches 1 frame(s) in t
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -Y icmp -T fields -e frame.number -e icmp.type -e icmp.code -e icmp.seq
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -902,7 +1023,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-12-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+ICMP lab — identify Time Exceeded (type 11) messages in the traceroute trace. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-12-interpret-echo-and-unreachable-messages/LAB-12-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -963,6 +1088,12 @@ The supplied udp.dstport == 9999 expression matches 2 frame(s) in the specified 
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -q -z follow,udp,ascii,3
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -971,7 +1102,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-13-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+UDP lab — examine UDP header fields and lengths in the UDP trace from the Kurose & Ross labs. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-13-follow-datagrams-and-service-refusal/LAB-13-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -1032,6 +1167,12 @@ The supplied tcp.analysis.retransmission expression matches 1 frame(s) in the sp
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -q -z expert
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -1040,7 +1181,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-14-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+TCP lab — find retransmissions and window behaviour in a larger file transfer trace. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-14-investigate-retransmission-and-zero-window/LAB-14-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -1101,6 +1246,12 @@ The supplied tcp.analysis.retransmission || tcp.analysis.zero_window expression 
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -q -z "io,stat,1,tcp.analysis.retransmission,tcp.analysis.zero_window"
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -1109,7 +1260,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-15-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+TCP lab — draw the Stevens graph of the file upload trace and estimate throughput. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-15-graph-bytes-rtt-and-recovery/LAB-15-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -1170,6 +1325,12 @@ The supplied http.response.code >= 400 expression matches 2 frame(s) in the spec
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -q --export-objects http,outputs/objects
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -1178,7 +1339,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-16-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+HTTP lab — compare conditional GET (304) behaviour in the HTTP traces. Hash every exported object with shasum -a 256. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-16-inspect-http-outcomes-and-http-2-frames/LAB-16-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -1192,6 +1357,10 @@ Compare encrypted and decrypted views
 - Without session secrets, encrypted application records do not disclose HTTP payload.
 - A controlled key log enables authorised inspection of this synthetic TLS exchange.
 - A server RSA private key alone cannot decrypt modern ECDHE or TLS 1.3 sessions.
+
+![TLS 1.2 Handshake in the Lab Capture — tls-session.pcap, decrypted view](courseware/assets/visuals/ladder-tls.png)
+
+*TLS 1.2 Handshake in the Lab Capture — tls-session.pcap, decrypted view*
 
 
 ### Lab 17 — Compare encrypted and decrypted views
@@ -1235,6 +1404,12 @@ The supplied tls.handshake.type == 1 expression matches 1 frame(s) in the specif
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/tls-session.pcap -o tls.keylog_file:data/lab-tls.keys -Y http
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -1243,7 +1418,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-17-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+TLS lab — identify the handshake records and cipher suite in the TLS trace from the Kurose & Ross labs. Source: J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php).
+
+> **Note:** Printable copy: labs/lab-17-compare-encrypted-and-decrypted-views/LAB-17-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -1304,6 +1483,12 @@ The supplied http.response.code == 500 expression matches 1 frame(s) in the spec
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
 
+**Try it with TShark**
+
+```text
+tshark -n -r data/branch-office.pcap -q -z conv,tcp
+```
+
 **Challenge**
 
 Develop and explain an alternative filter.
@@ -1312,7 +1497,11 @@ Develop and explain an alternative filter.
 
 Which second observation point would strengthen your conclusion?
 
-> **Note:** Full commands are in labs/lab-18-*/README.md. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
+**Extension (optional)**
+
+Write a second incident report from a capture in the Wireshark sample captures (wiki.wireshark.org/SampleCaptures), using the same template and checklist.
+
+> **Note:** Printable copy: labs/lab-18-produce-an-evidence-led-incident-report/LAB-18-Instructions.pdf. Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.
 
 ---
 
@@ -1322,6 +1511,23 @@ Which second observation point would strengthen your conclusion?
 - Repeat a lab with a fresh analyst profile.
 - Use the ten-step checklist on a new authorised capture.
 - Preserve packet numbers, filters and limitations in every report.
+
+
+## Further Learning
+
+These sources informed the course content and are recommended for extra practice. Kurose & Ross material is referenced with acknowledgement, as its terms require.
+
+- Wireshark — Learn — https://www.wireshark.org/learn
+- Kurose & Ross — Wireshark Labs (v9.0) — https://gaia.cs.umass.edu/kurose_ross/wireshark.php
+- UMass — Wireshark lab files — https://gaia.cs.umass.edu/wireshark-labs/
+- Cyber Defence Kit — Wireshark hands-on labs — https://docs.cyberdefencekit.org/wireshark/hands-on-labs.html
+- LabEx — Wireshark tutorials — https://labex.io/tutorials/category/wireshark
+- LabEx — Wireshark skill tree — https://labex.io/classroom/skilltrees/wireshark
+- LabEx — learn-wireshark (GitHub) — https://github.com/labex-labs/learn-wireshark
+- Wireshark.com — Learn — https://wireshark.com/learn/
+- 101 Labs — Wireshark WCNA — https://www.101labs.net/courses/101-labs-wireshark-wcna/
+- WPI CS3516 — Wireshark lab 1 — https://web.cs.wpi.edu/~cs3516/b09/wireshark/wire1/
+- Wireshark sample captures — https://wiki.wireshark.org/SampleCaptures
 
 
 ## Glossary

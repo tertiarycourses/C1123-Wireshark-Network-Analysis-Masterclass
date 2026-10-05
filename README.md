@@ -8,7 +8,7 @@ Learn to turn packet captures into evidence for network and application troubles
 | Programme | Non-WSQ commercial short course |
 | Duration | 4 days / 30 instructional hours |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wireshark-network-analysis-masterclass.html) |
-| Current version | v5.0 — 5 October 2026 |
+| Current version | v5.1 — 5 October 2026 |
 
 ## About the course
 
@@ -45,7 +45,7 @@ Practise capture planning, reproducible profiles, packet navigation, protocol di
 
 ## Labs
 
-Each lab has its own README, captures, mock data, scripts, observation templates, checkpoints and outputs folder.
+Each lab folder contains its own step-by-step instructions in **Markdown and PDF** (`LAB-NN-Instructions.md` / `.pdf`). It also has a scenario ticket, the supplied captures, the expected-evidence image, templates, a findings sheet, verification and export scripts, and a TShark equivalent for the lab.
 
 - [Lab 01: Establish a trace baseline](labs/lab-01-establish-a-trace-baseline/README.md)
 - [Lab 02: Plan capture placement](labs/lab-02-plan-capture-placement/README.md)
@@ -72,8 +72,8 @@ Each lab has its own README, captures, mock data, scripts, observation templates
 - [LG-Wireshark Network Analysis Masterclass (C1123).pdf](courseware/LG-Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29.pdf)
 - [LP-Wireshark Network Analysis Masterclass (C1123).docx](courseware/LP-Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29.docx)
 - [LP-Wireshark Network Analysis Masterclass (C1123).pdf](courseware/LP-Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29.pdf)
-- [Wireshark Network Analysis Masterclass (C1123)-v5.0.pdf](courseware/Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29-v5.0.pdf)
-- [Wireshark Network Analysis Masterclass (C1123)-v5.0.pptx](courseware/Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29-v5.0.pptx)
+- [Wireshark Network Analysis Masterclass (C1123)-v5.1.pdf](courseware/Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29-v5.1.pdf)
+- [Wireshark Network Analysis Masterclass (C1123)-v5.1.pptx](courseware/Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29-v5.1.pptx)
 - [Learner Guide Markdown](LG-Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29.md)
 - [All lab activities](labs/README.md)
 
@@ -81,7 +81,7 @@ Each lab has its own README, captures, mock data, scripts, observation templates
 
 Start with the Learner Guide or a lab README. Wireshark 4.6 or later is recommended. TShark and Python 3 enable the fixture checks and CSV export scripts. Scapy and OpenSSL are only required when regenerating mock captures. On Windows, use `py -3` in place of `python3` and add the Wireshark installation directory to PATH.
 
-Version 5.0 rebuilds the slide deck on the Tertiary Infotech house design used across the non-WSQ catalogue. Each topic opens with concept and diagram slides, and each lab walks through an overview, one slide per step, a "Test it" check and an **Expected Evidence** packet list. TShark produces that packet list from the lab's own capture, so you can compare your result directly. Tea, lunch and day-divider slides follow the Lesson Plan. Detailed steps are in the LG and the lab READMEs.
+Version 5.1 slides explain each concept in detail with visuals: ladder diagrams, timing charts and I/O and Stevens graphs drawn from the labs' own captures, plus the original course diagrams. For each lab, the slides show only the scenario and a four-task summary. The full steps are in the Learner Guide and in each lab's instruction files. Content on DHCP, NAT, IPv6, TShark, evidence hashing, HTTP/3/QUIC and security analysis draws on the sources listed in [labs/README.md](labs/README.md#further-learning).
 
 ## Public and private distribution
 

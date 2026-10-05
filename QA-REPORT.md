@@ -1,31 +1,28 @@
-# C1123 QA report — v5.0 (5 October 2026)
+# C1123 QA report — v5.1 (5 October 2026)
 
 **Result: PASS**
 
 | Check | Result |
 |---|---|
-| Prohibited-content scan (`non-wsq-courseware-qa/scan_prohibited.py`) | PASS — 133 artifacts, 0 hits |
-| Cover version vs filename | `Version v5.0` on the cover; file `…(C1123)-v5.0.pptx` |
-| Document Version Control Record | LP and LG each have a 5.0 row (4.0 row retained) |
-| Lab alignment | Labs 1–18 appear in the deck, LG (DOCX + MD), LP and `labs/` (18 folders) |
-| LP timing | Each of the 4 days = 480 training minutes, lunch excluded (asserted in `course_data.SCHEDULE`) |
-| Non-WSQ structure | "How You'll Learn" present. No assessment, TRAQOM or digital-attendance slides. Closes with What You Achieved → Continue Your Learning → Keep Practising → Thank You |
-| Superseded files | v4.0 PPT/PDF, LP, LG and LG.md moved to `courseware/archive/` |
-| Visual check | All 332 slides, the 43 LG pages and the 8 LP pages rendered and inspected. No clipped, overlapping or overflowing text |
+| Non-WSQ prohibited-content scan | PASS: 0 hits |
+| Cover version vs filename | The cover shows `Version v5.1` and the file is `…(C1123)-v5.1.pptx` |
+| Document Version Control Record | The LP and the LG each have a 5.1 row (4.0 and 5.0 rows are kept) |
+| Lab alignment | Labs 1–18 appear in the deck, the LG (DOCX + MD), the LP and `labs/` (18 folders, each with `LAB-NN-Instructions.md` + `.pdf`) |
+| Lab fixtures | `scripts/verify.py` and `scripts/export_evidence.py` pass in all 18 lab folders (TShark 4.6.8) |
+| TShark equivalents | All 18 commands were run from inside their lab folders against the supplied captures |
+| LP timing | Each of the 4 days totals 480 training minutes, lunch excluded |
+| Non-WSQ structure | "How You'll Learn" replaces any assessment block. The deck closes with What You Achieved → Continue Your Learning → Keep Practising → Thank You |
+| Superseded files | v4.0 and v5.0 deliverables are in `courseware/archive/` |
+| Visual check | All 279 slides and a sample lab instruction PDF were rendered and inspected, with no clipped, overlapping or overflowing text |
 
-## Design alignment with C735 (Agentic AI with n8n)
+## v5.1 changes checked
 
-The deck is built by the same house non-WSQ engine. It has:
-
-- the same cover
-- the Welcome & Housekeeping opener: two trainer cards, ice-breaker, ground rules, LMS portal screenshot, lesson plan, learning outcomes and How You'll Learn
-- a core-concepts section
-- numbered topic dividers
-- per-topic concept and diagram slides
-- for each lab: an activity overview, one slide per step and a Test it slide
-- topic recaps, day dividers and tea/lunch break slides that mirror the LP
-
-## Content provenance
-
-- **Reference diagrams.** These 60 diagrams are cropped from the private v3 reference deck (`scripts/extract_reference_diagrams.py`). Captions note where an old diagram shows superseded tooling (for example, the GUI is now Qt).
-- **Expected Evidence figures.** These are produced with TShark 4.6.8 from each lab's own synthetic capture and its `assets/checks.json` filters (`scripts/build_evidence_visuals.py`).
+- The slides show only each lab's scenario, a four-task summary, the expected evidence and the "Test it" check. Full steps are in the LG and in each lab's instructions (MD and PDF).
+- About 40 new concept slides. Their ladder diagrams, timing charts, I/O and Stevens graphs are drawn from the labs' own captures by `scripts/build_concept_visuals.py`.
+- Content added from external sources: DHCP, NAT, IPv6, Ethernet framing, TShark, BPF capture filters, display-filter functions, export-and-hash evidence handling, HTTP/3/QUIC, security patterns and baselining. The sources are listed in the LG (Further Learning) and in `labs/README.md`. Kurose & Ross material is referenced with acknowledgement, and none of its text is copied.
+- New lab mock data:
+  - a scenario ticket (`assets/scenario.md`)
+  - a findings sheet (`outputs/findings.md`)
+  - lab-specific templates: filter matrix (Lab 7), graph notes (Lab 15) and HTTP summary (Lab 16)
+  - an expected-evidence image
+  - an export script that now uses each lab's own capture and filter

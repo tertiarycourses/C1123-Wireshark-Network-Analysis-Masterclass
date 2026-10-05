@@ -154,9 +154,13 @@ for t in C.TOPICS:
         for _fn,_lb,_cap in getattr(C,"LAB_SHOTS",{}).get(a["num"],[]):
             img("screenshots/"+_fn,f"Lab {a['num']} expected evidence — the packet list your filter should produce")
         h3('Troubleshooting'); p(a.get('troubleshooting','See the lab README.'))
+        if getattr(C,"LAB_EXTENSIONS",{}).get(a["num"]):
+            h3("Try it with TShark"); code(C.LAB_EXTENSIONS[a["num"]][0])
         h3('Challenge'); p(a.get('challenge','Repeat with a second filter.'))
         h3('Reflection'); p(a.get('reflection','What further evidence is needed?'))
-        note(f"Full commands are in labs/lab-{a['num']:02d}-*/README.md. "
+        if getattr(C,"LAB_EXTENSIONS",{}).get(a["num"]):
+            h3("Extension (optional)"); p(C.LAB_EXTENSIONS[a["num"]][1])
+        note(f"Printable copy: labs/lab-{a['num']:02d}-{C.LAB_SLUGS[a['num']]}/LAB-{a['num']:02d}-Instructions.pdf. "
              + getattr(C,"LAB_NOTE","Use only accounts and data you are authorised to use."))
         rule()
 
@@ -178,6 +182,12 @@ bullets(getattr(C,"LG_NEXT_STEPS",[
  "Review each lab's detailed steps in this guide and re-run the labs on your own.",
 ]))
 
+_SOURCES=getattr(C,"SOURCES",[])
+if _SOURCES:
+    h1("Further Learning")
+    p("These sources informed the course content and are recommended for extra practice. Kurose & Ross "
+      "material is referenced with acknowledgement, as its terms require.")
+    bullets([f"{n} — {u}" for n,u in _SOURCES])
 _GLOSSARY=getattr(C,"LG_GLOSSARY",[])
 if _GLOSSARY:
     h1("Glossary")

@@ -1,0 +1,6 @@
+question,display_filter,matching_frames,count,notes
+Which DNS responses report a missing name?,dns.flags.rcode == 3,,,
+Which packets open TCP connections?,tcp.flags.syn == 1,,,
+,,,,
+,,,,
+,,,,

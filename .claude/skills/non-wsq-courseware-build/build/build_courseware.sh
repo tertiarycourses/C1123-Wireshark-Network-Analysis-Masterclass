@@ -34,9 +34,12 @@ CW="$REPO/courseware"
 
 echo "==> Generate PPT / LP / LG from the single source"
 python3 "$REPO/scripts/build_evidence_visuals.py"
+python3 "$REPO/scripts/build_concept_visuals.py"
 python3 "$HERE/build_slides.py"
 python3 "$HERE/build_lesson_plan.py"
 python3 "$HERE/build_learner_guide.py"
+python3 "$HERE/build_lab_guides.py"
+python3 "$HERE/build_lab_pdfs.py"
 
 PPT="$(ls -t "$CW"/*.pptx | head -1)"
 LP="$CW/LP-$SHORT.docx"

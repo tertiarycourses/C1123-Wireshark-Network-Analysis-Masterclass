@@ -1,65 +1,24 @@
 # Lab 09 — Diagnose DNS failure and delay
 
-C1123 | v4.0 | 45 minutes
+Users report that some names fail and others resolve slowly. You separate a missing name from a slow resolver using the DNS evidence.
 
-## Goal
+## Instructions
 
-Transaction ID plus addresses and ports pair a query with its response.
+- [LAB-09-Instructions.md](LAB-09-Instructions.md) — full step-by-step instructions
+- [LAB-09-Instructions.pdf](LAB-09-Instructions.pdf) — the same instructions, printable
 
-## What you will build
-
-A packet evidence table and written findings for diagnose dns failure and delay.
-
-## Prerequisites
-
-Wireshark 4.6 or later, Python 3 for optional scripts, TShark CLI tools. Complete earlier navigation/filter labs; all data is included here so you can rejoin independently.
-
-## Files
-
-- data/: offline captures and synthetic TLS session secrets
-- scripts/: generation, fixture verification and CSV export
-- assets/: topology, observation templates and checks
-- checkpoints/: rejoin instructions
-- outputs/: your saved evidence
-
-## Steps
-
-### 1. Prepare your lab workspace. Open this lab folder in a terminal. Windows uses py -3 in place of python3. Wireshark GUI alone is sufficient for the investigation; CLI scripts require TShark on PATH. Run the fixture verification first.
+## Quick start
 
 ```bash
 python3 scripts/verify.py
 ```
 
-### 2. Open data/branch-office.pcap. Apply dns and add dns.time as a column from a response packet. Pair IDs 101, 102 and 103.
+## Folder contents
 
-### 3. Apply dns.flags.rcode == 3. Expand DNS flags and name. Record missing.example.test and explain NXDOMAIN.
+- `data/` — synthetic captures (and, for the TLS lab, synthetic session secrets)
+- `assets/` — scenario ticket, expected evidence, templates and fixture checks
+- `scripts/` — verification, evidence export and optional data regeneration
+- `checkpoints/` — how to rejoin if you missed an earlier lab
+- `outputs/` — your findings and exported evidence
 
-### 4. Apply dns.id == 103. Measure the query-response interval: 0.800 seconds. Compare with the two 0.020 second transactions.
-
-### 5. Complete assets/dns-observations.csv with name, transaction ID, rcode, elapsed seconds and next investigation. Do not label this measured delay as a DNS timeout.
-
-### 6. Export a reproducible packet table. Record the filter, frame numbers, measurement, explanation and limitation in outputs/findings.md.
-
-```bash
-python3 scripts/export_evidence.py
-```
-
-## Test it
-
-The supplied dns.flags.rcode == 3 expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
-
-## Troubleshooting
-
-TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
-
-## Challenge
-
-Create a second filter that answers the same question, then identify one packet it includes or excludes differently. Support your explanation with a frame number.
-
-## Reflection
-
-What additional observation would turn your leading hypothesis into a stronger conclusion?
-
-## Reset and regeneration
-
-Keep the supplied captures for the core lab. Optional regeneration requires `python3 -m pip install -r requirements.txt` and OpenSSL, then `python3 scripts/generate_data.py`. Do not send packets or capture an unauthorised interface. Clear TLS key-log preferences after the exercise.
+*Wireshark Network Analysis Masterclass · C1123 · Version v5.1*

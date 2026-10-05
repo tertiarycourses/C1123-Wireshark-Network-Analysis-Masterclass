@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""Generate self-contained lab-folder READMEs from canonical course data."""
+"""Generate the C1123 lab folders' instructions and mock data from the single source.
 
-import glob
-import importlib
-import os
-import re
-import shutil
-import sys
+For every lab (course_data.LAB_BRIEFS + data_domainN.py) this writes, inside
+labs/lab-NN-<slug>/:
+
+  LAB-NN-Instructions.md      full step-by-step instructions (the PDF twin is
+                              rendered by build_lab_pdfs.py from the same blocks)
+  README.md                   short landing page pointing at the instructions
+  assets/scenario.md          mock help-desk ticket that sets the lab scenario
+  assets/expected-evidence.png the packet list the lab filter should produce
+  assets/<lab templates>      lab-specific mock templates (filter matrix, HTTP summary, …)
+  outputs/findings.md         pre-structured findings sheet the learner completes
+  scripts/export_evidence.py  exports THIS lab's capture + filter to outputs/evidence.csv
+
+and refreshes labs/README.md. The deck carries only each lab's scenario and a
+four-task summary; the detailed steps live here and in the Learner Guide.
+Nothing is deleted.
+"""
+import glob, importlib, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -35,172 +46,292 @@ def load_activities():
 
 REPO = repo_root(HERE)
 LABS = os.path.join(REPO, "labs")
+SHOTS = os.path.join(REPO, "courseware", "assets", "screenshots")
 ACTS = load_activities()
 TOPICS = {t["num"]: t for t in C.TOPICS}
+LO = {lo.split(":", 1)[0]: lo.split(":", 1)[1].strip() for lo in C.LEARNING_OUTCOMES}
 
 
-def lab_dir(a):
-    return os.path.join(LABS, f"lab-{a['num']:02d}-{C.LAB_SLUGS[a['num']]}")
+def folder_name(a):
+    return f"lab-{a['num']:02d}-{C.LAB_SLUGS[a['num']]}"
 
 
-def company_slug():
-    """Lab artifact filenames are stemmed on the scenario company, e.g.
-    "Lumina Living Pte Ltd" -> "Lumina-Living"."""
-    name = re.sub(r"\b(Pte|Ltd|Limited|Inc|LLC)\b\.?", "", C.COMPANY)
-    return "-".join(name.split())
+def lab_minutes():
+    """Hands-on minutes per lab, read from the Lesson Plan schedule so they agree."""
+    mins = {}
+    sched = C.SCHEDULE(lambda nums: " ".join(f"Lab {n}:" for n in nums))
+    for _day, (_theme, rows) in sched.items():
+        for row in rows:
+            m = re.fullmatch(r"Hands-on: Lab (\d+):", row[4].strip())
+            if m:
+                mins[int(m.group(1))] = mins.get(int(m.group(1)), 0) + row[2]
+    return mins
 
 
-def resource_names(a):
-    stem = f"{company_slug()}-Lab-{a['num']:02d}"
-    if a["num"] == 1:
-        return [
-            "README.md",
-            "TRAINER-GUIDE.md",
-            f"{stem}-Candidates.xlsx" if a["num"]==1 else f"{stem}-Staff-Information.xlsx" if a["num"]==2 else f"{stem}-People-Numbers.xlsx" if a["num"]==7 else f"{stem}-Staff-Questions.xlsx" if a["num"]==9 else f"{stem}-Working-Workbook.xlsx",
-            "templates/Lab-01-Trainer-Demonstration-Guide.docx",
-        ]
-    workbook = (
-        f"{stem}-Candidates.xlsx" if a["num"]==1 else f"{stem}-Staff-Information.xlsx" if a["num"]==2 else f"{stem}-People-Numbers.xlsx" if a["num"]==7 else f"{stem}-Staff-Questions.xlsx" if a["num"]==9 else f"{stem}-Working-Workbook.xlsx"
-        if a["num"] == 1 else f"{stem}-Working-Workbook.xlsx"
-    )
-    return [
-        f"{stem}-HR-Brief.docx",
-        f"{stem}-Claude-Generated-Work-Sample.docx",
-        workbook,
-        f"{stem}-Executive-Starter.pptx",
-        "templates/Prompt-and-Review-Template.docx",
-        "templates/Decision-and-Approval-Log.xlsx",
-    ]
+MINUTES = lab_minutes()
 
-
-def looks_like_shell(value):
-    first = value.strip().splitlines()[0] if value.strip() else ""
-    return bool(re.match(r"^(pwd|find |python|python3|source |claude(?:\s|$)|pip |/mcp|/setup-cowork)", first))
-
-
-for a in ACTS:
-    t = TOPICS[a["topic"]]
-    folder = lab_dir(a)
-    os.makedirs(os.path.join(folder, "templates"), exist_ok=True)
-    files = resource_names(a)
-    out = [
-        f"# Lab {a['num']} — {a['title']}", "",
-        f"**Topic {t['code']}:** {t['title']}  |  **Day 1**  |  **Approx. {C.LAB_DURATIONS[a['num']]} min**  |  **Course:** {C.TITLE}", "",
-        "## Company scenario", "", C.COMPANY_CONTEXT, "", a["desc"], "",
-        "## Goal", "", a["objective"], "",
-        "## What you'll build", "", a["build"], "",
-        f"**Tools and techniques:** {a['services']}", "",
-        "## Company use case", "",
-        f"- **Department:** {a['case']['department']}",
-        f"- **Sponsor:** {a['case']['sponsor']}",
-        f"- **Business challenge:** {a['case']['challenge']}",
-        f"- **Decision:** {a['case']['decision']}",
-        f"- **Evidence:** {'; '.join(a['case']['sources'])}",
-        f"- **Measures:** {'; '.join(a['case']['metrics'])}",
-        f"- **Controls:** {'; '.join(a['case']['controls'])}", "",
-        "## Files in this lab folder", "",
-    ]
-    out.extend(f"- `{name}`" for name in files)
-    if a["num"] == 11:
-        out.extend([
-            "- `automation/update_daily_control.py`",
-            "- `automation/generate_daily_brief.py`",
-            "- `inputs/daily-input.csv`",
-            "- `inputs/outlook-findings.json`",
-        ])
-    out.extend(["", "## Prerequisites", ""])
-    out.extend(f"- {x}" for x in a["prerequisites"])
-    if a.get("trainer_plan"):
-        out.extend(["", "## Trainer delivery plan", "", "**Lab 01 is a 20-minute demonstration and guided practice. It is not a prompt-contract exercise.**", ""])
-        out.extend(["| Time | Trainer action | What to teach | Learner evidence |", "|---|---|---|---|"])
-        for timing, action, teaching, evidence in a["trainer_plan"]:
-            out.append(f"| {timing} | {action} | {teaching} | {evidence} |")
-        out.extend(["", "### Before class", ""])
-        out.extend(f"- {x}" for x in a.get("trainer_preclass", []))
-        out.extend(["", "### Do not teach in Lab 01", ""])
-        out.extend(f"- {x}" for x in a.get("trainer_exclusions", []))
-    out.extend(["", "## Process map", "", " → ".join(a["deck_flow"]), "", "## Steps", ""])
-    for i, (instruction, payload) in enumerate(a["steps"], 1):
-        out.extend([f"### Step {i}", "", instruction, ""])
-        if payload:
-            if looks_like_shell(payload):
-                label, lang = "Command or in-app command", "bash"
-            else:
-                label, lang = "Prompt to give Claude", "text"
-            out.extend([f"**{label}:**", "", f"```{lang}", payload, "```", ""])
-    out.extend(["## Test it", "", a["test"], "", "## Troubleshooting", ""])
-    for label, fix in a["troubleshooting"]:
-        out.append(f"- **{label}.** {fix}")
-    out.extend([
-        "", "## Challenge", "", a["challenge"], "",
-        "## Reflection", "", a["reflection"], "",
-        "## Deliverable", "", a["build"], "",
-        "## Current product references", "",
-    ])
-    # Keep individual guides compact; authoritative references are relevant to all
-    # activities and the complete supplied-source list remains in labs/README.md.
-    for name, url in C.LG_REFERENCES:
-        keys = ("microsoft 365", "connector", "cowork", "claude code")
-        if a["num"] == 1:
-            keys += ("chrome", "word", "outlook", "office add-ins")
-        if any(key in name.lower() for key in keys):
-            out.append(f"- [{name}]({url})")
-    out.extend(["", "---", "", f"*{C.TITLE} · {C.COURSE_CODE} · Version {C.VERSION} · © 2026 Tertiary Infotech Academy Pte Ltd*", ""])
-    path = os.path.join(folder, "README.md")
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(out))
-    print("Saved", path)
-    if a.get("trainer_plan"):
-        trainer = [
-            f"# Trainer Guide — Lab {a['num']}", "",
-            f"**Teaching outcome:** {a['objective']}", "",
-            "## What you teach", "",
-            "1. The Office add-in works with the open Office item.",
-            "2. The Microsoft 365 connector is a separate route in Claude Desktop for authorised Microsoft 365 context.",
-            "3. Claude in Chrome is the hands-on Outlook web route for this lab.",
-            "4. Learners review the live message and send only after trainer approval.", "",
-            "## 20-minute run sheet", "",
-            "| Time | Trainer action | What to teach | Learner evidence |", "|---|---|---|---|",
-        ]
-        for timing, action, teaching, evidence in a["trainer_plan"]:
-            trainer.append(f"| {timing} | {action} | {teaching} | {evidence} |")
-        trainer.extend(["", "## Before class", ""])
-        trainer.extend(f"- {x}" for x in a.get("trainer_preclass", []))
-        trainer.extend(["", "## Keep out of Lab 01", ""])
-        trainer.extend(f"- {x}" for x in a.get("trainer_exclusions", []))
-        trainer.extend(["", "## Completion standard", "", a["test"], ""])
-        trainer_path = os.path.join(folder, "TRAINER-GUIDE.md")
-        with open(trainer_path, "w", encoding="utf-8") as fh:
-            fh.write("\n".join(trainer))
-        print("Saved", trainer_path)
-
-# The requested v2 structure replaces generated flat lab Markdown files.  The
-# previous version remains recoverable from Git history and courseware/archive.
-for old in glob.glob(os.path.join(LABS, "lab-*.md")):
-    os.remove(old)
-
-rows = [
-    f"# Labs — {C.TITLE}", "",
-    f"**Course Code:** {C.COURSE_CODE}  |  **Version {C.VERSION} · {C.VERSION_DATE}**", "",
-    f"All {len(ACTS)} activities use one fictional company, **{C.COMPANY}**, and build a connected FY2027 planning and management pack.", "",
-    "The presentation explains concepts, decisions, process maps and realistic work samples. These lab folders and the Learner Guide contain the complete prompts, commands and verification checks.", "",
-    "## Lab folder standard", "",
-    "Every lab folder contains a detailed README, a realistic company Word brief, an Excel working file, an editable PowerPoint starter and reusable review/approval templates. Lab 11 also contains safe local automation starters.", "",
-    "## Lab sequence", "",
-    "| Topic | Lab | Activity | Company outcome |", "|---|---:|---|---|",
+BASE_FILES = [
+    ("data/branch-office.pcap", "Synthetic branch-office capture used by the lab"),
+    ("assets/scenario.md", "The help-desk ticket that sets the scenario"),
+    ("assets/checks.json", "Filters and frame counts the fixture must satisfy"),
+    ("assets/expected-evidence.png", "The packet list your filter should produce"),
+    ("scripts/verify.py", "Checks the capture facts with TShark"),
+    ("scripts/export_evidence.py", "Exports this lab's evidence rows to outputs/evidence.csv"),
+    ("outputs/findings.md", "Findings sheet you complete"),
 ]
-for a in ACTS:
-    folder = f"lab-{a['num']:02d}-{C.LAB_SLUGS[a['num']]}"
-    rows.append(f"| {TOPICS[a['topic']]['code']} | {a['num']:02d} | [{a['title']}]({folder}/README.md) | {a['build']} |")
 
-rows.extend(["", "## Supplied research and further learning", ""])
-rows.extend(f"- [{name}]({url})" for name, url in C.LAB_RESEARCH_SOURCES)
-rows.extend(["", "## Authoritative product guidance", ""])
-rows.extend(f"- [{name}]({url})" for name, url in C.LG_REFERENCES)
-rows.extend([
-    "", "See [tools.md](tools.md) for account, add-in, connector, Cowork and Claude Code requirements.", "",
-    "---", "", f"*{C.TITLE} · {C.COURSE_CODE} · Version {C.VERSION} · © 2026 Tertiary Infotech Academy Pte Ltd*", "",
-])
-with open(os.path.join(LABS, "README.md"), "w", encoding="utf-8") as fh:
-    fh.write("\n".join(rows))
-print("Saved", os.path.join(LABS, "README.md"))
+TROUBLE_KEYS = ("TShark not found:", "A filter returns zero:", "TLS remains opaque:")
+
+
+def troubleshooting(a):
+    text = a.get("troubleshooting", "")
+    parts = []
+    for i, key in enumerate(TROUBLE_KEYS):
+        start = text.find(key)
+        if start < 0:
+            continue
+        ends = [text.find(k) for k in TROUBLE_KEYS[i + 1:] if text.find(k) > start]
+        end = min(ends) if ends else len(text)
+        parts.append((key.rstrip(":"), text[start + len(key):end].strip()))
+    return parts or [("Problem", text)]
+
+
+def lab_files(a):
+    files = list(BASE_FILES)
+    if a["num"] == 17:
+        files[0] = ("data/tls-session.pcap", "Synthetic TLS capture used by the lab")
+    files += C.LAB_BRIEFS[a["num"]]["files"]
+    seen, out = set(), []
+    for p, d in files:
+        if p not in seen:
+            seen.add(p); out.append((p, d))
+    return out
+
+
+def lab_blocks(a):
+    """One ordered content stream per lab, rendered to Markdown here and to PDF
+    by build_lab_pdfs.py. Block kinds: h1, meta, h2, p, bullets, numbered,
+    steps, table, img, note."""
+    b = C.LAB_BRIEFS[a["num"]]
+    t = TOPICS[a["topic"]]
+    lo = a["objective"]
+    blocks = [
+        ("h1", f"Lab {a['num']:02d} — {a['title']}"),
+        ("meta", [("Course", f"{C.TITLE} ({C.COURSE_CODE})"), ("Topic", f"{t['code']} — {t['title']}"),
+                  ("Learning outcome", f"{lo} — {LO.get(lo, '')}"),
+                  ("Time", f"about {MINUTES.get(a['num'], a.get('duration', 45))} minutes"),
+                  ("Version", f"{C.VERSION} · {C.VERSION_DATE}")]),
+        ("h2", "Scenario"), ("p", b["scenario"]),
+        ("h2", "Goal"), ("p", a["desc"]),
+        ("h2", "What you will produce"), ("p", b["produce"] + "."),
+        ("h2", "Before you start"),
+        ("bullets", ["Wireshark 4.6 or later, with the TShark command-line tools on PATH.",
+                     "Python 3 for the verification and export scripts (Windows: use py -3 in place of python3).",
+                     "Open this lab folder in a terminal; every file the lab needs is inside it.",
+                     "Use only the supplied synthetic captures — do not capture on a network you are not authorised to monitor."]),
+        ("h2", "Files for this lab"),
+        ("table", ["File", "What it is for"], lab_files(a)),
+        ("h2", "Lab at a glance"), ("numbered", b["tasks"]),
+        ("h2", "Step-by-step"), ("steps", a["steps"]),
+        ("h2", "Expected evidence"),
+        ("p", "With the lab filter applied, your packet list should match the frames below "
+              "(produced by TShark from this lab's own capture)."),
+        ("img", "assets/expected-evidence.png", f"Lab {a['num']:02d} expected evidence"),
+        ("h2", "Test it"), ("p", a["test"]),
+        ("h2", "Troubleshooting"), ("bullets", [f"{k}: {v}" for k, v in troubleshooting(a)]),
+        ("h2", "Try it with TShark"),
+        ("p", "The same evidence from the command line — run it from this lab folder:"),
+        ("code", C.LAB_EXTENSIONS[a["num"]][0]),
+        ("h2", "Challenge"), ("p", a.get("challenge", "")),
+        ("h2", "Reflection"), ("p", a.get("reflection", "")),
+        ("h2", "Extension (optional)"), ("p", C.LAB_EXTENSIONS[a["num"]][1]),
+        ("h2", "Reset"),
+        ("p", "Clear all display filters and return to the C1123-Analyst or Default profile. "
+              "If you loaded a TLS key log, remove it from Preferences > Protocols > TLS. "
+              "The supplied captures never need regenerating for the core lab."),
+        ("note", "The same steps appear in the Learner Guide. The slides show only the scenario and a summary."),
+    ]
+    return blocks
+
+
+def to_markdown(blocks):
+    out = []
+    for blk in blocks:
+        k = blk[0]
+        if k == "h1": out += [f"# {blk[1]}", ""]
+        elif k == "meta": out += [" | ".join(f"**{a}:** {b}" for a, b in blk[1]), ""]
+        elif k == "h2": out += [f"## {blk[1]}", ""]
+        elif k == "p": out += [blk[1], ""]
+        elif k == "bullets": out += [f"- {x}" for x in blk[1]] + [""]
+        elif k == "numbered": out += [f"{i}. {x}" for i, x in enumerate(blk[1], 1)] + [""]
+        elif k == "steps":
+            for i, (text, cmd) in enumerate(blk[1], 1):
+                out += [f"{i}. {text}", ""]
+                if cmd:
+                    out += ["   ```bash", f"   {cmd}", "   ```", ""]
+        elif k == "table":
+            out += ["| " + " | ".join(blk[1]) + " |", "|" + "---|" * len(blk[1])]
+            out += [f"| `{p}` | {d} |" for p, d in blk[2]] + [""]
+        elif k == "img": out += [f"![{blk[2]}]({blk[1]})", ""]
+        elif k == "code": out += ["```bash", blk[1], "```", ""]
+        elif k == "note": out += [f"> **Note:** {blk[1]}", ""]
+    out += ["---", "", f"*{C.TITLE} · {C.COURSE_CODE} · Version {C.VERSION} · © 2026 Tertiary Infotech Academy Pte Ltd*", ""]
+    return "\n".join(out)
+
+
+# ------------------------------------------------------------------ mock data
+EXPORT_SCRIPT = '''"""Export this lab's evidence rows to outputs/evidence.csv.
+
+Uses the capture and filter(s) defined in assets/checks.json, so the exported
+table always matches the frames the lab asks about.
+"""
+from pathlib import Path
+import json, shutil, subprocess, sys
+
+root = Path(__file__).resolve().parent.parent
+exe = shutil.which("tshark")
+if not exe and sys.platform == "darwin":
+    candidate = Path("/Applications/Wireshark.app/Contents/MacOS/tshark")
+    if candidate.exists():
+        exe = str(candidate)
+if not exe:
+    raise SystemExit("TShark not found. Install Wireshark with CLI tools, or add its folder to PATH.")
+cfg = json.loads((root / "assets/checks.json").read_text())
+checks = [c for c in cfg["checks"] if c.get("count")]
+display_filter = " || ".join(f"({c['filter']})" for c in checks)
+cmd = [exe, "-n", "-r", str(root / "data" / cfg["capture"]), "-Y", display_filter,
+       "-T", "fields", "-E", "header=y", "-E", "separator=,", "-E", "quote=d"]
+for field in ["frame.number", "frame.time_relative", "_ws.col.def_src", "_ws.col.def_dst",
+              "_ws.col.protocol", "frame.len", "_ws.col.info"]:
+    cmd += ["-e", field]
+for c in checks:
+    for arg in c.get("decode", []):
+        if arg not in cmd:
+            cmd.append(arg)
+keylog = any(c.get("keylog") for c in checks)
+cmd += ["-o", "tls.keylog_file:" + (str(root / "data/lab-tls.keys") if keylog else "")]
+r = subprocess.run(cmd, capture_output=True, text=True)
+if r.returncode:
+    raise SystemExit(r.stderr)
+(root / "outputs").mkdir(exist_ok=True)
+(root / "outputs/evidence.csv").write_text(r.stdout)
+print(f"Wrote outputs/evidence.csv ({max(0, len(r.stdout.splitlines()) - 1)} rows) for: {display_filter}")
+'''
+
+LAB_TEMPLATES = {
+    7: {"assets/filter-matrix.csv":
+        "question,display_filter,matching_frames,count,notes\n"
+        "Which DNS responses report a missing name?,dns.flags.rcode == 3,,,\n"
+        "Which packets open TCP connections?,tcp.flags.syn == 1,,,\n"
+        ",,,,\n,,,,\n,,,,\n"},
+    15: {"assets/graph-notes-template.md":
+         "# Graph notes — Lab 15\n\n| Graph | Stream / filter | Interval | Unit | Visible pattern | Limitation |\n"
+         "|---|---|---|---|---|---|\n| Time/Sequence (Stevens) | tcp.stream == 3 | — | sequence number | | |\n"
+         "| I/O — retransmissions | tcp.analysis.retransmission | 1 s | packets | | |\n"
+         "| I/O — zero window | tcp.analysis.zero_window | 1 s | packets | | |\n"
+         "| Round Trip Time | tcp.stream == 3 | — | seconds | | |\n"},
+    16: {"assets/http-summary.csv":
+         "uri,status_code,request_frame,response_frame,response_interval_s,proposed_next_step\n"
+         "/health,,,,,\n/slow,,,,,\n/missing,,,,,\n/fault,,,,,\n"},
+}
+
+
+def scenario_ticket(a):
+    b = C.LAB_BRIEFS[a["num"]]
+    lines = [
+        f"# Help-desk ticket HD-20{a['num']:02d}", "",
+        "| Field | Value |", "|---|---|",
+        f"| Site | {C.COMPANY} (fictional) |",
+        "| Reported by | Branch help desk |",
+        "| Client | 192.0.2.10 (02:00:00:00:00:10) |",
+        "| Server | 192.0.2.20 (02:00:00:00:00:20) — portal.example.test |",
+        "| Resolver | 192.0.2.53 |",
+        f"| Evidence supplied | data/{'tls-session.pcap' if a['num'] == 17 else 'branch-office.pcap'} |", "",
+        "## What was reported", "", b["scenario"], "",
+        "## What you are asked to deliver", "", b["produce"] + ".", "",
+        "All names and addresses are documentation values; the capture is synthetic.", "",
+    ]
+    if a["num"] == 18:
+        lines += ["See also `assets/incident-ticket.md` (ticket BR-104).", ""]
+    return "\n".join(lines)
+
+
+def findings_template(a):
+    b = C.LAB_BRIEFS[a["num"]]
+    lines = [f"# Findings — Lab {a['num']:02d}: {a['title']}", "",
+             "Analyst:            Date:", "",
+             "## Capture and observation point", "", "- Capture file:", "- Profile used:", "- Display filter(s):", "",
+             "## Evidence by task", ""]
+    for i, task in enumerate(b["tasks"], 1):
+        lines += [f"### {i}. {task}", "", "- Frame number(s):", "- Measurement / value:", "- What it shows:", ""]
+    lines += ["## Conclusion", "", "- Observed facts:", "- Hypothesis (if any):",
+              "- Limitation of this capture:", "- Next observation that would strengthen the conclusion:", ""]
+    return "\n".join(lines)
+
+
+def write(path, text, overwrite=True):
+    if not overwrite and os.path.exists(path):
+        return
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(text)
+
+
+def readme(a):
+    stem = f"LAB-{a['num']:02d}-Instructions"
+    b = C.LAB_BRIEFS[a["num"]]
+    return "\n".join([
+        f"# Lab {a['num']:02d} — {a['title']}", "",
+        b["scenario"], "",
+        "## Instructions", "",
+        f"- [{stem}.md]({stem}.md) — full step-by-step instructions",
+        f"- [{stem}.pdf]({stem}.pdf) — the same instructions, printable", "",
+        "## Quick start", "", "```bash", "python3 scripts/verify.py", "```", "",
+        "## Folder contents", "",
+        "- `data/` — synthetic captures (and, for the TLS lab, synthetic session secrets)",
+        "- `assets/` — scenario ticket, expected evidence, templates and fixture checks",
+        "- `scripts/` — verification, evidence export and optional data regeneration",
+        "- `checkpoints/` — how to rejoin if you missed an earlier lab",
+        "- `outputs/` — your findings and exported evidence", "",
+        f"*{C.TITLE} · {C.COURSE_CODE} · Version {C.VERSION}*", ""])
+
+
+def main():
+    for a in ACTS:
+        folder = os.path.join(LABS, folder_name(a))
+        if not os.path.isdir(folder):
+            print("Skipped (folder missing)", folder); continue
+        shot = os.path.join(SHOTS, f"lab-{a['num']:02d}-evidence.png")
+        if os.path.exists(shot):
+            shutil.copyfile(shot, os.path.join(folder, "assets", "expected-evidence.png"))
+        write(os.path.join(folder, "assets", "scenario.md"), scenario_ticket(a))
+        write(os.path.join(folder, "outputs", "findings.md"), findings_template(a))
+        for rel, body in LAB_TEMPLATES.get(a["num"], {}).items():
+            write(os.path.join(folder, rel), body)
+        write(os.path.join(folder, "scripts", "export_evidence.py"), EXPORT_SCRIPT)
+        write(os.path.join(folder, f"LAB-{a['num']:02d}-Instructions.md"), to_markdown(lab_blocks(a)))
+        write(os.path.join(folder, "README.md"), readme(a))
+        print("Saved", folder_name(a))
+
+    rows = [f"# Labs — {C.TITLE}", "",
+            f"**Course code:** {C.COURSE_CODE}  |  **Version {C.VERSION} · {C.VERSION_DATE}**", "",
+            f"All {len(ACTS)} labs use the same fictional branch office and supplied synthetic captures — "
+            "no live network access is needed. Each lab folder is self-contained.", "",
+            "Every folder holds `LAB-NN-Instructions.md` and `LAB-NN-Instructions.pdf` (full steps), "
+            "a scenario ticket, the expected evidence, templates, a findings sheet and the verification scripts.", "",
+            "| Topic | Lab | Activity | Instructions | You produce |", "|---|---:|---|---|---|"]
+    for a in ACTS:
+        f = folder_name(a); stem = f"LAB-{a['num']:02d}-Instructions"
+        rows.append(f"| {TOPICS[a['topic']]['code']} | {a['num']:02d} | [{a['title']}]({f}/README.md) | "
+                    f"[MD]({f}/{stem}.md) · [PDF]({f}/{stem}.pdf) | {C.LAB_BRIEFS[a['num']]['produce']} |")
+    rows += ["", "## Further learning", "", "These sources informed the v5.1 labs and are recommended for extra practice. "
+             "Kurose & Ross material is used with acknowledgement, as its terms require; no lab text is copied.", ""]
+    rows += [f"- [{n}]({u})" for n, u in C.SOURCES]
+    rows += ["", "Use only authorised data. The TLS key log in Lab 17 is synthetic session material for the supplied capture only.", "",
+             "---", "", f"*{C.TITLE} · {C.COURSE_CODE} · Version {C.VERSION} · © 2026 Tertiary Infotech Academy Pte Ltd*", ""]
+    write(os.path.join(LABS, "README.md"), "\n".join(rows))
+    print("Saved labs/README.md")
+
+
+if __name__ == "__main__":
+    main()

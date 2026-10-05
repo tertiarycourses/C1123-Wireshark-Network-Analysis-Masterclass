@@ -1,7 +1,7 @@
 TITLE='Wireshark Network Analysis Masterclass'
 SHORT_TITLE='Wireshark Network Analysis Masterclass (C1123)'
 COURSE_CODE='C1123'
-VERSION='v5.0'
+VERSION='v5.1'
 VERSION_DATE='5 October 2026'
 ORG='Tertiary Infotech Academy Pte Ltd'
 UEN='UEN: 201200696W'
@@ -20,7 +20,8 @@ LAB_NOTE='Use the README in the matching labs/lab-NN-title/ folder. Capture only
 LG_NEXT_STEPS=['Repeat a lab with a fresh analyst profile.','Use the ten-step checklist on a new authorised capture.','Preserve packet numbers, filters and limitations in every report.']
 LG_GLOSSARY=[('Capture filter','libpcap expression limiting packets stored during capture.'),('Display filter','Wireshark expression selecting stored packets for viewing.'),('iRTT','Initial TCP round-trip sample from the handshake.'),('Retransmission','Repeated TCP byte range; interpretation depends on capture completeness.'),('Zero window','A receiver advertisement that no receive-buffer space is available.'),('TLS key log','Per-session secrets permitting authorised decryption of the matching session.'),('SPAN','Switch mirroring of selected traffic to a sensor port.'),('TAP','An inline observation device supplying link traffic to a sensor.')]
 VERSION_HISTORY=[('4.0','2 October 2026','Revised from the supplied v3 deck; current guidance, visuals and 18 self-contained labs.','Dr. Alfred Ang'),
- ('5.0','5 October 2026','Deck rebuilt on the house non-WSQ engine (C735 design system): full admin opener, core-concepts section, reference diagrams re-presented as captioned visuals, TShark evidence visuals per lab, per-topic schedule with day dividers and breaks.','Dr. Alfred Ang')]
+ ('5.0','5 October 2026','Deck rebuilt on the house non-WSQ engine (C735 design system): full admin opener, core-concepts section, reference diagrams re-presented as captioned visuals, TShark evidence visuals per lab, per-topic schedule with day dividers and breaks.','Dr. Alfred Ang'),
+ ('5.1','5 October 2026','Lab step slides replaced by scenario + summary slides (full steps in the LG and new per-lab instruction MD/PDF). About 40 new concept slides with visuals drawn from the lab captures; DHCP, NAT, IPv6, TShark, security patterns and baselining added from external sources. Per-lab scenario tickets, findings templates, TShark equivalents and optional extensions.','Dr. Alfred Ang')]
 
 # ------------------------------------------------------------------ schedule (per-topic, 480 training min/day incl. tea; lunch excluded)
 def SCHEDULE(lab_titles):
@@ -207,3 +208,175 @@ TOPIC_SLIDES={
     ('text_image','Export and Preserve Evidence',['File > Export Specified Packets saves only the relevant frames.','Export Packet Dissections produces text/CSV for reports.','Keep the original capture unchanged and record its hash.'],D+'ref-248.png','File | Export Packet Dissections','EVIDENCE'),
     ('cards3','Writing the Incident Report',[('Observed facts',['Frame numbers','Filters used','Measured times and counts']),('Interpretation',['What the evidence suggests','Alternative explanations','Confidence level']),('Next actions',['Further captures needed','Owner and system to check','Limitations of this trace'])],'REPORTING')],
 }
+
+# ------------------------------------------------------------------ lab briefs (deck scenario + summary; lab instruction files)
+# The deck shows only the scenario and a 4-task summary per lab; full steps live in the LG
+# and in labs/lab-NN-*/LAB-NN-Instructions.md/.pdf.
+LAB_STEPS_IN_DECK=False
+_B=[
+ ("The branch help desk has received a capture from the client PC (192.0.2.10), but nobody has checked what it contains. Before anyone diagnoses a fault, you establish a trusted baseline of the trace.",
+  ["Verify the lab fixture with verify.py","Record packet count and capture duration","Trace a field from Packet Details to bytes","Pair the ARP request and reply"],
+  "A baseline record of the capture and the ARP exchange",[]),
+ ("A user on the branch LAN reports slow web pages. Your manager asks where a sensor should go — and what it would see — before anyone touches the switch.",
+  ["Mark three sensor points on the topology","Check capture-filter syntax (tcp port 80)","Compare capture vs display filtering","Complete the capture plan and permissions"],
+  "A completed capture plan with sensor placement and limits",[("assets/topology.md","Fictional branch topology"),("assets/capture-plan.md","Capture plan template you complete")]),
+ ("Three analysts will share findings on the same case. To make results reproducible, you build a named analyst profile with numeric addresses and evidence columns.",
+  ["Create the C1123-Analyst profile","Turn off name resolution","Add stream index and delta columns","Record and export the profile folder"],
+  "A reusable C1123-Analyst profile and its folder path",[]),
+ ("Users see intermittent web errors. You need the failing responses to stand out, and annotations that travel with the evidence.",
+  ["Filter HTTP 4xx and 5xx responses","Add a LAB HTTP Error colouring rule","Mark and comment the 500 response","Save and reopen the annotated pcapng"],
+  "An annotated pcapng with a comment on the failing response",[]),
+ ("The /slow page takes almost a second to load. The network team blames the server and the server team blames the network — your timing evidence decides.",
+  ["Measure SYN→SYN/ACK and initial RTT","Time the /slow request to its response","Compare captured vs displayed deltas","Write a hypothesis and next capture point"],
+  "Timing evidence separating path delay from server delay",[]),
+ ("Management wants a one-page summary of what crossed the branch link, including a test voice call that users said sounded choppy.",
+  ["Review Protocol Hierarchy and Conversations","Graph all traffic in bits per second","Identify the SIP INVITE and 200 OK","Decode RTP and find the missing sequence"],
+  "A traffic summary and RTP loss evidence",[]),
+ ("The team keeps sharing filters that silently hide evidence. You build a tested filter matrix so everyone answers the same question the same way.",
+  ["Find the NXDOMAIN response and SYNs","Compare two bracketings of one filter","Test !(ip.addr == x) vs ip.addr != x","Save five verified filters with frames"],
+  "A filter evidence matrix with verified frame numbers",[("assets/filter-matrix.csv","Filter matrix template (question, filter, frames)")]),
+ ("A user says \"the portal is down\". Before blaming the web server, you rebuild every dependency the browser needed: address resolution, name resolution, connection and request.",
+  ["Locate the ARP exchange and DNS lookup","Draw the TCP/HTTP exchange in Flow Graph","Fill in the dependency map","Contrast a local and a routed next hop"],
+  "A completed dependency map with frame ranges",[("assets/dependency-map.md","Dependency chain template"),("assets/topology.md","Fictional branch topology")]),
+ ("Users report that some names fail and others resolve slowly. You separate a missing name from a slow resolver using the DNS evidence.",
+  ["Pair DNS queries and responses by ID","Explain the NXDOMAIN response","Measure the 0.8 s slow transaction","Record observations and next steps"],
+  "A DNS observations sheet with measured intervals",[("assets/dns-observations.csv","DNS observations sheet you complete")]),
+ ("A technician suspects an ARP problem on the branch LAN. You check what the capture actually proves before anyone raises a spoofing alert.",
+  ["Record ARP request and reply fields","Confirm the server IP-to-MAC mapping","Verify the opcode in the packet bytes","Test the hypotheses against the evidence"],
+  "A verified ARP table entry and an evidence-based conclusion",[("assets/arp-table.csv","ARP table you complete"),("assets/arp-hypotheses.md","Competing explanations to test")]),
+ ("The security team asks whether any unusual IPv4 traffic — multicast, broadcast or fragments — appears in the branch capture.",
+  ["Record IPv4 header fields of an echo","Compare multicast MAC and IP destination","Check for fragmented packets","Classify scope in the IP header sheet"],
+  "A completed IPv4 header and scope sheet",[("assets/ip-header.csv","IPv4 header sheet you complete")]),
+ ("Ping to the server works, yet a diagnostic tool on UDP port 9999 fails. You use ICMP evidence to explain the difference.",
+  ["Pair echo requests and replies","Read the quoted headers in the unreachable","Find the original UDP datagram","Record the events and your conclusion"],
+  "An ICMP event log explaining the service refusal",[("assets/icmp-events.csv","ICMP event log you complete")]),
+ ("The diagnostic application sends UDP and never hears back. You follow the datagrams to show what was sent and why there is no transport-level acknowledgement.",
+  ["Tell the datagram from its ICMP quote","Follow the UDP stream (LAB-UDP)","Decode the RTP stream on port 4002","Explain the refusal without UDP ACKs"],
+  "A saved UDP stream and an explanation of the refusal",[]),
+ ("A file download stalls part-way through. You must show whether the sender, the receiver or the path held things up.",
+  ["Read Expert Information for stream 3","Compare the retransmitted segment","Confirm the zero-window advertisement","Identify the port 81 reset"],
+  "A TCP evidence sheet for retransmission, zero window and reset",[("assets/tcp-evidence.csv","TCP evidence sheet you complete")]),
+ ("Management wants a picture, not a packet list. You graph the stalled transfer so the retransmission and zero-window events are obvious.",
+  ["Open the Stevens time/sequence graph","Graph retransmission and zero-window events","Compare RTT samples with the handshake","Write graph notes with units and limits"],
+  "Graph notes with interval, unit, stream and limitation",[("assets/graph-notes-template.md","Graph notes template")]),
+ ("The web team wants to know which pages fail and whether the new HTTP/2 test service is negotiating correctly.",
+  ["Pair four URIs with their status codes","Follow the stream and export an object","Decode port 8080 as HTTP/2","Summarise outcomes and next steps"],
+  "An HTTP outcome summary and an exported object",[("assets/http-summary.csv","HTTP summary template")]),
+ ("Under an authorised test, the portal's HTTPS traffic must be inspected. You compare what an analyst sees with and without the session secrets.",
+  ["Inspect the encrypted TLS view","Read the SNI in the ClientHello","Load the key log and view the HTTP","Verify, then remove the key log"],
+  "A comparison of the encrypted and decrypted views",[("data/tls-session.pcap","Synthetic TLS capture"),("data/lab-tls.keys","Synthetic session secrets for this capture only")]),
+ ("Ticket BR-104 combines several user complaints. You produce a reproducible incident report that separates observed facts from hypotheses.",
+  ["Read the incident ticket","Collect evidence for each symptom","Write the report from the template","Peer-review with the ten-step checklist"],
+  "An evidence-led incident report",[("assets/incident-ticket.md","Incident ticket BR-104"),("assets/report-template.md","Report template"),("assets/ten-step-checklist.md","Ten-step review checklist")]),
+]
+LAB_BRIEFS={i:dict(scenario=s,tasks=t,produce=p,files=f) for i,(s,t,p,f) in enumerate(_B,1)}
+
+# ------------------------------------------------------------------ v5.1 enrichment: detailed concept slides with visuals
+# Visuals under courseware/assets/visuals/ are drawn from the labs' own captures by
+# scripts/build_concept_visuals.py. Topic additions draw on the external sources in SOURCES.
+V='visuals/'
+def _add(topic, after_title, *specs):
+    """Insert specs after the slide whose title matches after_title (None = append)."""
+    lst = TOPIC_SLIDES.setdefault(topic, [])
+    idx = len(lst)
+    if after_title:
+        for i, sp in enumerate(lst):
+            if after_title in sp:
+                idx = i + 1; break
+    lst[idx:idx] = list(specs)
+
+_add(1, 'The TCP/IP and OSI Models',
+ ('text_image','Anatomy of a Packet',['Every frame is nested headers: Ethernet II (14 B) › IPv4 (20 B) › TCP (20 B) › application payload.','Packet Details lists them in the same top-to-bottom order.','Clicking a field highlights its exact bytes in the Packet Bytes pane.'],V+'diagram-encapsulation.png','Frame 21 of the lab capture: GET /health, 124 bytes','ENCAPSULATION'))
+_add(1, None,
+ ('content','Capture Your Own Baseline',['Pick the busy interface — the sparkline beside each interface shows live traffic.','Capture 30–60 s of normal activity on a network you are authorised to monitor, then stop.','Save as pcapng so comments and interface details are kept.','Record interface, start time, duration and dropped packets (Statistics > Capture File Properties).'],'GETTING STARTED'),
+ ('tiles','TShark — Wireshark on the Command Line',[('tshark -D','List capture interfaces'),('tshark -i 1 -a duration:60 -w base.pcapng','Timed capture to a file'),('tshark -r base.pcapng -Y "dns"','Read a file with a display filter'),('-T fields -e ip.src -e dns.qry.name','Print chosen fields only'),('-q -z io,phs','Protocol hierarchy statistics'),('-q -z conv,tcp','TCP conversation table')],'TSHARK'))
+_add(2, 'Where to Tap Into the Network',
+ ('text_image','Choosing the Observation Point',['A — on the client: sees everything the client sends and receives.','B — SPAN on the switch: copies frames, may drop under load and hides errored frames.','C — TAP on the uplink: both directions, including physical-layer errors.','D — at the server: shows server-side timing.'],V+'diagram-capture-points.png','The same problem looks different from each capture point','CAPTURE PLACEMENT'))
+_add(2, 'Capture Filters vs Display Filters',
+ ('shot',V+'diagram-filter-pipeline.png','The Filtering Pipeline','Capture filters (BPF) decide what is stored; display filters only decide what is shown','FILTERING'),
+ ('tiles','Capture Filter (BPF) Cheat Sheet',[('host 192.0.2.10','To or from one host'),('net 192.0.2.0/24','One subnet'),('tcp port 80','One TCP port'),('port 53','DNS over UDP or TCP'),('not arp and not stp','Drop background noise'),('tcp[tcpflags] & tcp-syn != 0','TCP SYN packets only')],'BPF SYNTAX'),
+ ('content','Capture Options for Long Captures',['Ring buffer: e.g. 10 files × 100 MB keeps the most recent traffic without filling the disk.','Auto-stop after a duration, file size or packet count.','Snapshot length can limit stored bytes per packet for privacy and size.','Always check “dropped” counts before trusting a gap.'],'CAPTURE OPTIONS'))
+_add(3, 'Apply as Column',
+ ('tiles','Recommended Analyst Columns',[('frame.time_delta_displayed','Gap from the previous shown packet'),('tcp.stream','Which conversation'),('tcp.time_delta','Gap within the TCP stream'),('dns.time','DNS response time'),('http.time','HTTP response time'),('tcp.window_size','Receiver window (scaled)')],'PROFILES'))
+_add(4, 'Colouring Rules',
+ ('tiles','Default Colours — What They Mean',[('Black + red text','Bad TCP: retransmission, zero window, RST'),('Light green','HTTP'),('Light purple','TCP'),('Light blue','UDP (DNS, SIP, RTP …)'),('Pale yellow','ARP and routing'),('Black + green text','ICMP errors')],'COLOURING'))
+_add(5, 'End-to-End Path Delay',
+ ('text_image','Timing the Slow Request',['Stream 1 handshake: SYN → SYN/ACK 30 ms, complete in 40 ms.','The server ACKs GET /slow in 10 ms …','… then needs 750 ms before the 200 OK.','The path is fast; the delay is server processing.'],V+'ladder-slow.png','TCP stream 1 from the lab capture','EVIDENCE'),
+ ('shot',V+'chart-delay-breakdown.png','Where the 0.8 Seconds Went','Measured intervals inside TCP stream 1 — path delay is small; server processing dominates','DELAY BREAKDOWN'))
+_add(6, 'Capture File Properties',
+ ('shot',V+'chart-protocol-mix.png','Packets vs Bytes by Protocol','Protocol Hierarchy of the lab capture: TCP has the most packets, but byte share tells a different story','PROTOCOL HIERARCHY'),
+ ('shot',V+'chart-io-graph.png','Reading the I/O Graph','Gaps show waiting; the red bar marks the retransmission/zero-window events','I/O GRAPH'))
+_add(6, 'Voice over IP (VoIP)',
+ ('text_image','SIP Signalling and RTP Media',['INVITE / 200 OK set up the call on UDP 5060.','RTP carries the voice — here on UDP 4002, decoded with Decode As.','Sequence 100, 101, 103, 104: number 102 never arrived at this capture point.'],V+'ladder-sip-rtp.png','The lab capture’s test call','VOIP'))
+_add(7, 'Filter Building Techniques',
+ ('tiles','Operators and Functions Worth Knowing',[('tcp.port in {80, 443, 8080}','Set membership (comma-separated)'),('http.host contains "example"','Substring match'),('dns.qry.name matches "^miss"','Regular expression'),('eth.src[0:3] == 02:00:00','Byte slice of a field'),('len(http.request.uri) > 50','Length of a field'),('!(arp || dns)','Exclude whole protocols')],'DISPLAY FILTERS'))
+_add(8, 'The TCP/IP Protocol Suite',
+ ('text_image','One Web Request, Step by Step',['Three-way handshake: SYN, SYN/ACK, ACK.','GET /health, server ACK, 200 OK, client ACK.','FIN/ACK closes the connection.','Every arrow is a frame you can click in the lab.'],V+'ladder-tcp-http.png','TCP stream 0 from the lab capture','TCP/IP IN ACTION'))
+_add(8, 'Firewalls and NAT',
+ ('shot',V+'diagram-nat.png','NAT Changes What Each Capture Point Sees','Inside and outside captures show different addresses and ports for the same flow','NAT'),
+ ('text_image','DHCP — How a Host Gets Its Address',['Discover and Request are broadcasts from 0.0.0.0 (UDP 68 → 67).','Offer and ACK carry the address, lease, gateway and DNS server.','No DHCP ACK means no address — check for Offers first.'],V+'diagram-dhcp-dora.png','Discover, Offer, Request, ACK','DHCP'))
+_add(9, 'How DNS Works',
+ ('text_image','DNS in the Lab Capture',['ARP first, then three DNS transactions to the resolver.','0x0066 returns NXDOMAIN in 20 ms — a fast, definite “no”.','0x0067 takes 800 ms — slow, but successful.'],V+'ladder-arp-dns.png','Frames 1–8 of the lab capture','DNS EVIDENCE'),
+ ('shot',V+'chart-dns-time.png','Measuring DNS Response Time','dns.time on each response: a failing name and a slow name are different problems','DNS TIMING'),
+ ('tiles','DNS Record Types You Will See',[('A / AAAA','IPv4 / IPv6 address'),('CNAME','Alias to another name'),('MX','Mail server'),('NS','Authoritative name server'),('PTR','Reverse lookup (address → name)'),('TXT','Text, e.g. SPF or verification')],'DNS'))
+_add(10, 'ARP in Practice',
+ ('two_col','The Ethernet II Frame','Fields',['Destination MAC (6 B)','Source MAC (6 B)','EtherType (2 B)','Payload, then FCS (4 B, rarely captured)'],'Values to recognise',['ff:ff:ff:ff:ff:ff — broadcast','01:00:5e:… — IPv4 multicast','0x0800 IPv4 · 0x0806 ARP','0x86DD IPv6 · 0x8100 VLAN tag'],'LAYER 2'))
+_add(10, 'ARP Problems to Recognise',
+ ('content','Spotting ARP Spoofing — Carefully',['arp.duplicate-address-detected flags one IP seen with two MACs.','A flood of gratuitous replies (arp.isgratuitous) is suspicious.','Legitimate causes exist: failover, VRRP, a replaced NIC.','Corroborate with switch CAM tables before calling it an attack.'],'SECURITY'))
+_add(11, 'IPv4 Filters and Checks',
+ ('two_col','IPv4 vs IPv6 at a Glance','IPv4',['20-byte header (with options: more)','TTL limits hops','ARP resolves MAC addresses','Routers may fragment','Filter: ip, icmp'],'IPv6',['Fixed 40-byte header + extension headers','Hop Limit replaces TTL','Neighbor Discovery (ICMPv6 135/136)','Only the source fragments','Filter: ipv6, icmpv6'],'IPV6'))
+_add(12, 'ICMP Messages to Know',
+ ('text_image','Echo, Refusal and Reset in the Lab Capture',['Three echo pairs, 30 ms each — the host is reachable.','UDP to port 9999 → ICMP Type 3 Code 3: nothing listening.','TCP SYN to port 81 → RST: the TCP equivalent of “closed”.'],V+'ladder-icmp-udp.png','Frames 9–16 and 55–56','ICMP EVIDENCE'),
+ ('content','Traceroute and TTL Exceeded',['Traceroute sends probes with TTL 1, 2, 3 …','Each router that drops a probe returns ICMP Type 11 (Time Exceeded).','Filter icmp.type == 11 to list the hops.','Windows uses ICMP probes; Linux/macOS use UDP by default.'],'ICMP'))
+_add(13, 'Analysing UDP',
+ ('tiles','UDP Services You Will Meet',[('DNS · 53','Name resolution'),('DHCP · 67/68','Address assignment'),('NTP · 123','Time synchronisation'),('SNMP · 161/162','Device monitoring'),('Syslog · 514','Log forwarding'),('QUIC · 443','HTTP/3 transport')],'UDP'))
+_add(14, 'Retransmissions',
+ ('text_image','Retransmission and Zero Window in Stream 3',['The server sends the HTTP 500 at 2.270 s.','No ACK arrives — the same bytes are resent 1.000 s later.','The client then advertises Win=0: its buffer is full.','Finally FIN/ACK closes the stream.'],V+'ladder-retrans.png','TCP stream 3 from the lab capture','TCP EVIDENCE'),
+ ('content','Closing a Connection',['FIN/ACK from each side is an orderly close (four-way, often three packets).','RST aborts immediately — refused port, crash or firewall.','A RST straight after a SYN means nothing is listening on that port.','Long gaps before FIN usually mean idle timeouts.'],'TEARDOWN'))
+_add(15, 'Time/Sequence (Stevens) Graph',
+ ('shot',V+'chart-stevens.png','Stevens Graph of the Stalled Transfer','Drawn from stream 3 of the lab capture: the same bytes appear twice, then the zero window follows','GRAPHS'))
+_add(16, 'HTTP/1.1 vs HTTP/2',
+ ('content','Export Objects — and Prove What You Exported',['File > Export Objects > HTTP saves every transferred object.','Hash each file (shasum -a 256 <file>) and record the hash in your report.','Never open or run exported files on your workstation.','TShark: tshark -r file -q --export-objects http,outputs/objects'],'EVIDENCE HANDLING'),
+ ('two_col','HTTP/3 and QUIC','What changes',['HTTP/3 runs over QUIC on UDP 443','QUIC encrypts almost all transport headers','Connection IDs replace the 4-tuple'],'What you can still see',['Filter: quic','Initial packets and SNI (with care)','Full decryption needs the key log, as with TLS'],'MODERN WEB'))
+_add(17, 'TLS Handshake Evidence',
+ ('text_image','TLS 1.2 Handshake in the Lab Capture',['TCP handshake, then Client Hello with SNI portal.example.test.','Server Hello, Certificate and key exchange; both sides send Finished.','With lab-tls.keys loaded, GET /health and 200 OK appear as HTTP.'],V+'ladder-tls.png','tls-session.pcap, decrypted view','TLS'))
+_add(18, 'Writing the Incident Report',
+ ('tiles','Security Patterns to Recognise',[('Port scan','Many SYNs to different ports, answered by RST'),('ARP spoofing','One IP, two MACs; gratuitous floods'),('DNS tunnelling','Very long or random query names'),('Cleartext credentials','http.authorization, ftp PASS, telnet'),('Beaconing','Regular small connections to one host'),('Unusual ports','Services where they should not be')],'SECURITY ANALYSIS'),
+ ('content','Build and Use a Baseline',['Capture “normal” at known-good times: login, file copy, a web page.','Note protocols, top talkers, typical response times and packet sizes.','Compare a problem trace against the baseline, not against guesses.','Keep baselines with dates — networks change.'],'BASELINING'),
+ ('tiles','Keep Learning',[('Wireshark User’s Guide','wireshark.org/docs'),('Sample captures','wiki.wireshark.org/SampleCaptures'),('Kurose & Ross Wireshark labs','gaia.cs.umass.edu/kurose_ross/wireshark.php'),('Ask Wireshark','ask.wireshark.org'),('SharkFest talks','youtube.com/@WireSharkFest'),('Wireshark Certified Analyst','wireshark.org/certifications')],'RESOURCES'))
+
+# ------------------------------------------------------------------ v5.1 enrichment: per-lab TShark equivalent + optional extension
+KR='J.F. Kurose and K.W. Ross, Wireshark Labs (gaia.cs.umass.edu/kurose_ross/wireshark.php)'
+SC='Wireshark sample captures (wiki.wireshark.org/SampleCaptures)'
+LAB_EXTENSIONS={
+ 1:('tshark -n -r data/branch-office.pcap -Y arp', f'Getting Started lab — capture your own short baseline on an authorised network and compare its protocol mix with this file. Source: {KR}.'),
+ 2:('tshark -D', f'Getting Started lab — list your interfaces and identify which one carries traffic before planning a capture. Source: {KR}.'),
+ 3:('tshark -n -r data/branch-office.pcap -Y dns -T fields -e frame.number -e ip.src -e ip.dst -e dns.qry.name', 'Export your C1123-Analyst profile folder and import it on a second machine; confirm the columns appear.'),
+ 4:('tshark -n -r data/branch-office.pcap -Y "http.response.code >= 400" -T fields -e frame.number -e http.response.code -e http.request_in -e http.time', f'HTTP lab — apply your LAB HTTP Error rule to the HTTP trace from the Kurose & Ross labs. Source: {KR}.'),
+ 5:('tshark -n -r data/branch-office.pcap -Y "tcp.stream == 1 && http.time" -T fields -e frame.number -e tcp.analysis.initial_rtt -e http.time', f'TCP lab — measure the initial RTT and response times in the TCP trace supplied with the Kurose & Ross labs. Source: {KR}.'),
+ 6:('tshark -n -r data/branch-office.pcap -q -z io,phs', f'Analyse a longer SIP/RTP call from the {SC} with Telephony > VoIP Calls.'),
+ 7:('tshark -n -r data/branch-office.pcap -Y "dns.flags.rcode == 3"', 'Rewrite two of your matrix filters with the set (in {…}) and matches operators and confirm the frame lists are unchanged.'),
+ 8:('tshark -n -r data/branch-office.pcap -Y "arp || dns.id == 0x0065 || tcp.stream == 0"', f'Ethernet and ARP lab — trace the dependency chain for a page you load on an authorised network. Source: {KR}.'),
+ 9:('tshark -n -r data/branch-office.pcap -Y "dns.flags.response == 1" -T fields -e dns.id -e dns.qry.name -e dns.flags.rcode -e dns.time', f'DNS lab — compare A, NS and MX lookups in the DNS trace from the Kurose & Ross labs. Source: {KR}.'),
+ 10:('tshark -n -r data/branch-office.pcap -Y arp -T fields -e arp.opcode -e arp.src.proto_ipv4 -e arp.src.hw_mac', f'Ethernet and ARP lab — read the ARP cache on your own machine (arp -a) and match it to captured replies. Source: {KR}.'),
+ 11:('tshark -n -r data/branch-office.pcap -Y "ip.dst == 224.0.0.1" -T fields -e eth.dst -e ip.dst -e ip.ttl', f'IP lab — study TTL and fragmentation in the traceroute trace from the Kurose & Ross labs. Source: {KR}.'),
+ 12:('tshark -n -r data/branch-office.pcap -Y icmp -T fields -e frame.number -e icmp.type -e icmp.code -e icmp.seq', f'ICMP lab — identify Time Exceeded (type 11) messages in the traceroute trace. Source: {KR}.'),
+ 13:('tshark -n -r data/branch-office.pcap -q -z follow,udp,ascii,3', f'UDP lab — examine UDP header fields and lengths in the UDP trace from the Kurose & Ross labs. Source: {KR}.'),
+ 14:('tshark -n -r data/branch-office.pcap -q -z expert', f'TCP lab — find retransmissions and window behaviour in a larger file transfer trace. Source: {KR}.'),
+ 15:('tshark -n -r data/branch-office.pcap -q -z "io,stat,1,tcp.analysis.retransmission,tcp.analysis.zero_window"', f'TCP lab — draw the Stevens graph of the file upload trace and estimate throughput. Source: {KR}.'),
+ 16:('tshark -n -r data/branch-office.pcap -q --export-objects http,outputs/objects', f'HTTP lab — compare conditional GET (304) behaviour in the HTTP traces. Hash every exported object with shasum -a 256. Source: {KR}.'),
+ 17:('tshark -n -r data/tls-session.pcap -o tls.keylog_file:data/lab-tls.keys -Y http', f'TLS lab — identify the handshake records and cipher suite in the TLS trace from the Kurose & Ross labs. Source: {KR}.'),
+ 18:('tshark -n -r data/branch-office.pcap -q -z conv,tcp', f'Write a second incident report from a capture in the {SC}, using the same template and checklist.'),
+}
+
+SOURCES=[('Wireshark — Learn','https://www.wireshark.org/learn'),
+ ('Kurose & Ross — Wireshark Labs (v9.0)','https://gaia.cs.umass.edu/kurose_ross/wireshark.php'),
+ ('UMass — Wireshark lab files','https://gaia.cs.umass.edu/wireshark-labs/'),
+ ('Cyber Defence Kit — Wireshark hands-on labs','https://docs.cyberdefencekit.org/wireshark/hands-on-labs.html'),
+ ('LabEx — Wireshark tutorials','https://labex.io/tutorials/category/wireshark'),
+ ('LabEx — Wireshark skill tree','https://labex.io/classroom/skilltrees/wireshark'),
+ ('LabEx — learn-wireshark (GitHub)','https://github.com/labex-labs/learn-wireshark'),
+ ('Wireshark.com — Learn','https://wireshark.com/learn/'),
+ ('101 Labs — Wireshark WCNA','https://www.101labs.net/courses/101-labs-wireshark-wcna/'),
+ ('WPI CS3516 — Wireshark lab 1','https://web.cs.wpi.edu/~cs3516/b09/wireshark/wire1/'),
+ ('Wireshark sample captures','https://wiki.wireshark.org/SampleCaptures')]
