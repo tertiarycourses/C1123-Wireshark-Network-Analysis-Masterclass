@@ -331,16 +331,17 @@ def step_slide(kicker,act_title,n,total,text,cmd=""):
     oval(s,Inches(0.85),Inches(2.5),Inches(1.4),Inches(1.4),_acc(TEAL))
     txt(s,Inches(0.85),Inches(2.74),Inches(1.4),Inches(0.9),[[(str(n),38,DK_BG if THEME["dark"] else WHITE,True)]],align=PP_ALIGN.CENTER)
     txt(s,Inches(0.95),Inches(1.95),Inches(11),Inches(0.4),[[(f"STEP {n} OF {total}",13,_grey(),True)]])
-    txt(s,Inches(2.55),Inches(2.4),Inches(10.1),Inches(1.3),[[(text,23,_ink(),False)]],anchor=MSO_ANCHOR.MIDDLE)
+    L=len(str(text)); ssize=23 if L<=110 else (20 if L<=180 else (17 if L<=260 else 15))
+    txt(s,Inches(2.55),Inches(2.2),Inches(10.1),Inches(1.85),[[(text,ssize,_ink(),False)]],anchor=MSO_ANCHOR.MIDDLE)
     # HARD RULE: never render a comment-only "command" (# …) on a slide — the
     # code box appears only for a real, runnable command.
     if cmd and not cmd.lstrip().startswith("#"):
         if THEME["dark"]:
             # slightly lighter fill + faint border so the box reads against the dark bg
-            rect(s,Inches(2.55),Inches(4.15),Inches(10.1),Inches(0.95),RGBColor(0x10,0x14,0x1E),line=DK_FAINT)
+            rect(s,Inches(2.55),Inches(4.35),Inches(10.1),Inches(0.95),RGBColor(0x10,0x14,0x1E),line=DK_FAINT)
         else:
-            rect(s,Inches(2.55),Inches(4.15),Inches(10.1),Inches(0.95),RGBColor(0x0B,0x12,0x20))
-        txt(s,Inches(2.8),Inches(4.28),Inches(9.7),Inches(0.7),[[("$ "+cmd,13,RGBColor(0x9C,0xDC,0xFE),False)]],anchor=MSO_ANCHOR.MIDDLE)
+            rect(s,Inches(2.55),Inches(4.35),Inches(10.1),Inches(0.95),RGBColor(0x0B,0x12,0x20))
+        txt(s,Inches(2.8),Inches(4.48),Inches(9.7),Inches(0.7),[[("$ "+cmd,13,RGBColor(0x9C,0xDC,0xFE),False)]],anchor=MSO_ANCHOR.MIDDLE)
     footer(s); return s
 def dark_rows(tag,title_lines,sub_lines,rows,warn=None,accent=None,numbered=True):
     """Masterclass-style dark feature slide: terminal tag, amber (or custom
@@ -606,6 +607,19 @@ def shot(title,img,kicker=None,caption=""):
             [[(caption,10.5 if long_caption else 12,_grey(),False)]],
             align=PP_ALIGN.CENTER,anchor=MSO_ANCHOR.MIDDLE)
     footer(s); return s
+def text_image(title,items,img,kicker=None,caption="",accent=BLUE):
+    """Concept bullets on the left, a framed undistorted diagram/screenshot on the right."""
+    s=head(slide(),title,kicker,kcolor=accent)
+    bullets(s,Inches(0.85),Inches(2.05),Inches(5.0),Inches(4.6),items,size=16,color=_ink(),gap=12,mcolor=accent)
+    with Image.open(img) as im: iw,ih=im.size
+    maxw,maxh=Inches(6.45),Inches(4.35)
+    sc=min(maxw/iw,maxh/ih); W=int(iw*sc); H=int(ih*sc)
+    x=int(Inches(6.1)+(maxw-W)/2); y=int(Inches(2.05)+(maxh-H)/2)
+    rect(s,x-Inches(0.06),y-Inches(0.06),W+Inches(0.12),H+Inches(0.12),_line())
+    s.shapes.add_picture(img,x,y,width=W,height=H)
+    if caption:
+        txt(s,Inches(6.1),Inches(6.5),maxw,Inches(0.4),[[(caption,11,_grey(),False)]],align=PP_ALIGN.CENTER)
+    footer(s); return s
 def test_slide(act_title,text,kicker):
     s=head(slide(),act_title,kicker,TEAL)
     rect(s,Inches(0.85),Inches(2.3),Inches(11.7),Inches(2.6),DK_PANEL if THEME["dark"] else RGBColor(0xE8,0xF7,0xEE))
@@ -646,14 +660,24 @@ tile_grid("Ground Rules",[
  "Mutual respect: agree to disagree.","One conversation at a time.",
  "Be punctual; return from breaks on time.","Learn by doing — try every hands-on lab."],
  kicker="HOUSEKEEPING",cols=2,size=15)
-_dl=flow_h("Download Course Material",[
+_PORTAL=getattr(C,"PORTAL_SHOT",None)
+_portal_img=os.path.join(REPO,"courseware","assets","screenshots",_PORTAL) if _PORTAL else None
+if _portal_img and os.path.exists(_portal_img):
+    text_image("Download Course Material",[
+     "Go to lms-tms.tertiaryinfotech.com.",
+     "Enter your registered email and click Send OTP.",
+     "Key in the one-time password from your inbox to log in.",
+     "Open this course to download the slides, Learner Guide and Lesson Plan.",
+     "Keep them open during class — refer to them as you work through each lab."],
+     _portal_img,kicker="COURSE PORTAL",caption="https://lms-tms.tertiaryinfotech.com")
+_dl=None if (_portal_img and os.path.exists(_portal_img)) else flow_h("Download Course Material",[
  "Sign in at the LMS-TMS portal",
  "Open this course from your dashboard",
  "Go to the Courseware tab",
  "Download the Slides (PPT/PDF), Learner Guide and Lesson Plan",
  "Keep them open alongside the labs as you work"],kicker="COURSE PORTAL")
 # Full portal URL as a wide caption (kept out of the narrow chips so it never wraps mid-token)
-txt(_dl,Inches(0.85),Inches(6.5),Inches(11.6),Inches(0.4),
+if _dl is not None: txt(_dl,Inches(0.85),Inches(6.5),Inches(11.6),Inches(0.4),
     [[("Portal:  https://lms-tms.tertiaryinfotech.com",16,_acc(BLUE),True)]],align=PP_ALIGN.CENTER)
 # Lesson plan overview — derived entirely from course_data (day themes + the
 # topic→lab mapping) so it can never drift from the LP or the labs.
@@ -719,6 +743,14 @@ if C.DAYS == 1:
     # crowd the divider rule) and let the morning/afternoon columns carry detail.
     two_col("Lesson Plan — One Day, 8 hours",_left,_right,
             kicker="SCHEDULE",lhead="Morning",rhead="Afternoon")
+elif C.DAYS > 2:
+    for _d1 in range(1,C.DAYS+1,2):
+        _d2=min(_d1+1,C.DAYS)
+        _left=[(f"Day {_d1} — {C.DAY_THEMES[_d1]}",0)]+[_topic_line(_TB[n]) for n in _BY_DAY.get(_d1,[]) if n in _TB]
+        _right=([(f"Day {_d2} — {C.DAY_THEMES[_d2]}",0)]+[_topic_line(_TB[n]) for n in _BY_DAY.get(_d2,[]) if n in _TB]) if _d2!=_d1 else []
+        if _d2==C.DAYS: _right+=[("Daily timing",0),("9:30am–6:30pm · 1-hour lunch · tea breaks within training time",1)]
+        two_col(f"Lesson Plan — {C.DAYS} Days, 8 hours/day (Days {_d1}–{_d2})",_left,_right,
+                kicker="SCHEDULE",lhead=f"Day {_d1}",rhead=f"Day {_d2}")
 else:
     _d2=min(2,C.DAYS)
     _left=[(f"Day 1 — {C.DAY_THEMES[1]}",0)]+[_topic_line(_TB[n]) for n in _BY_DAY.get(1,[]) if n in _TB]
@@ -776,11 +808,38 @@ def _lab_extras(num):
     for fn,label,cap in _SHOTS.get(num,[]):
         p=os.path.join(_SHOTDIR,fn)
         if os.path.exists(p):
-            shot(f"{label}",p,kicker=f"LAB {num} · SCREENSHOT",caption=cap)
+            shot(f"{label}",p,kicker=f"LAB {num} · {getattr(C,'LAB_SHOT_KICKER','SCREENSHOT')}",caption=cap)
+
+# Optional extra concept slides per topic, built only from the engine's components:
+#   TOPIC_SLIDES = {n: [("content",title,items,kicker) | ("tiles",title,items,kicker)
+#     | ("two_col",title,lhead,left,rhead,right,kicker) | ("cards3",title,[(head,[bullets])...],kicker)
+#     | ("statement",line1,line2,kicker) | ("flow",title,steps,kicker)
+#     | ("shot",file,title,caption,kicker) | ("text_image",title,items,file,caption,kicker)]}
+# Image files resolve against courseware/assets/.
+_TSL=getattr(C,"TOPIC_SLIDES",{})
+_ASSETDIR=os.path.join(REPO,"courseware","assets")
+def _topic_extras(num,accent):
+    for spec in _TSL.get(num,[]):
+        k=spec[0]
+        if k=="content": content(spec[1],spec[2],kicker=spec[3])
+        elif k=="tiles": tile_grid(spec[1],spec[2],kicker=spec[3],cols=2,size=14,accent=accent)
+        elif k=="two_col": two_col(spec[1],spec[3],spec[5],kicker=spec[6],lhead=spec[2],rhead=spec[4])
+        elif k=="cards3": cards3(spec[1],[(CARD_COLORS[i%3],h,b) for i,(h,b) in enumerate(spec[2])],kicker=spec[3])
+        elif k=="statement": big_statement(spec[1],spec[2],spec[3],color=accent)
+        elif k=="flow": flow_h(spec[1],spec[2],kicker=spec[3],color=accent)
+        elif k=="shot": shot(spec[2],os.path.join(_ASSETDIR,spec[1]),kicker=spec[4],caption=spec[3])
+        elif k=="text_image": text_image(spec[1],spec[2],os.path.join(_ASSETDIR,spec[3]),kicker=spec[5],caption=spec[4],accent=accent)
+        else: raise ValueError(f"Unknown TOPIC_SLIDES kind {k!r}")
+_DAYSTART=getattr(C,"DAY_START_TOPIC",{})     # {topic_num: day} → day divider before that topic
+_BREAKS=getattr(C,"BREAK_AFTER_TOPIC",{})     # {topic_num: ("Lunch Break","1 hour")}
 
 
 for t in C.TOPICS:
     accent=TOPIC_THEME.get(t["num"],BLUE)
+    if t["num"] in _DAYSTART:
+        _d=_DAYSTART[t["num"]]
+        section(f"DAY {_d}",C.DAY_THEMES.get(_d,""),f"D{_d}",
+                "Recap of the previous day, then today's topics and labs",accent=BLUE)
     section(f"TOPIC {t['code']}", t["title"], t["code"], t["subtitle"], accent=accent)
     # concept slide(s) — visual tile grid instead of a bullet list (topic-accented)
     # Non-WSQ: no exam, so the kicker shows the topic's share of course time
@@ -790,6 +849,7 @@ for t in C.TOPICS:
     tile_grid(f"Key Concepts — {t['title']}", t["concepts"],
               kicker=(f"COURSE COVERAGE {_w}" if _w else "KEY CONCEPTS"),
               cols=2, size=14, accent=accent)
+    _topic_extras(t["num"],accent)
     acts=TOPIC_ACTS[t["num"]]
     # a card summary of the labs in this topic
     # Split the topic's labs into at most three cards. Only emit cards that
@@ -799,7 +859,9 @@ for t in C.TOPICS:
     groups=[g for g in (acts[i:i+third] for i in range(0,len(acts),third)) if g][:3]
     cards=[(CARD_COLORS[gi], _lab_range(g).strip(" ()"), [a["title"] for a in g])
            for gi,g in enumerate(groups)]
-    cards3(f"Hands-On Labs — {t['title']}", cards, kicker="WHAT YOU'LL DO")
+    # A single-lab topic skips the summary card — its activity overview follows directly.
+    if len(acts)>1:
+        cards3(f"Hands-On Labs — {t['title']}", cards, kicker="WHAT YOU'LL DO")
     # per activity
     for a in acts:
         activity_overview(f"LAB {a['num']}", a["title"], a["desc"], a["build"], a["services"], kicker=f"TOPIC {t['code']} · HANDS-ON")
@@ -811,9 +873,14 @@ for t in C.TOPICS:
             step_slide(f"LAB {a['num']}", a["title"], i, total, instr, cmd)
         test_slide(a["title"], a["test"], kicker=f"LAB {a['num']} · VERIFY")
     # topic recap
+    # Expand bare outcome codes ("LO1") to the outcome text, then restate the topic's concepts.
+    _LOMAP={lo.split(":",1)[0].strip():lo.split(":",1)[1].strip() for lo in C.LEARNING_OUTCOMES if ":" in lo}
+    _objs=[_LOMAP.get(a["objective"].strip(),a["objective"]) for a in {x["objective"]:x for x in acts}.values()]
     content(f"Recap — {t['title']}",
-            ["You can now: "+a["objective"] for a in {x["objective"]:x for x in acts}.values()][:6],
+            (["You can now: "+o[0].lower()+o[1:] for o in _objs]+list(t["concepts"]))[:6],
             kicker="TOPIC RECAP", size=17)
+    if t["num"] in _BREAKS:
+        _bk=_BREAKS[t["num"]]; brk(_bk[0],_bk[1],color=AMBER)
 
 # ---------------- CLOSE ----------------
 section("WRAP-UP","Course Summary & Next Steps","")

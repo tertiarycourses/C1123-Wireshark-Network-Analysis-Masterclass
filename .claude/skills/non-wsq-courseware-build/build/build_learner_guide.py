@@ -10,7 +10,7 @@ the slide deck, Lesson Plan and labs.
 """
 import os, sys
 from docx import Document
-from docx.shared import Pt, RGBColor
+from docx.shared import Pt, RGBColor, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
@@ -97,6 +97,8 @@ def code(t): B.append(("code",t))
 def table(headers,rows): B.append(("table",headers,rows))
 def note(t): B.append(("note",t))
 def rule(): B.append(("rule",))
+def img(rel,caption): B.append(("img",rel,caption))   # rel: path under courseware/assets/
+_ASSET_ROOT=os.path.join(REPO,"courseware","assets")
 
 # ---------------- content ----------------
 h1("Introduction")
@@ -131,6 +133,10 @@ for t in C.TOPICS:
     p(t["subtitle"])
     h3("Key concepts")
     bullets(t["concepts"])
+    # One key diagram per topic — the first image slide the deck shows for it.
+    for _sp in getattr(C,"TOPIC_SLIDES",{}).get(t["num"],[]):
+        if _sp[0]=="text_image": img(_sp[3],_sp[1]+" — "+_sp[4]); break
+        if _sp[0]=="shot": img(_sp[1],_sp[2]+" — "+_sp[3]); break
     for a in [x for x in ACT if x["topic"]==t["num"]]:
         h2(f"Lab {a['num']} — {a['title']}")
         p(f"Learning outcome: {a['objective']}.")
@@ -145,6 +151,8 @@ for t in C.TOPICS:
         steps(st)
         h3("Test it")
         p(a["test"])
+        for _fn,_lb,_cap in getattr(C,"LAB_SHOTS",{}).get(a["num"],[]):
+            img("screenshots/"+_fn,f"Lab {a['num']} expected evidence — the packet list your filter should produce")
         h3('Troubleshooting'); p(a.get('troubleshooting','See the lab README.'))
         h3('Challenge'); p(a.get('challenge','Repeat with a second filter.'))
         h3('Reflection'); p(a.get('reflection','What further evidence is needed?'))
@@ -208,6 +216,7 @@ def render_md():
             out+=[""]
         elif kind=="note": out+=[f"> **Note:** {rest[0]}",""]
         elif kind=="rule": out+=["---",""]
+        elif kind=="img": out+=[f"![{rest[1]}](courseware/assets/{rest[0]})","",f"*{rest[1]}*",""]
         elif kind=="dl":
             for term,defn in rest[0]: out.append(f"- **{term}** — {defn}")
             out.append("")
@@ -282,6 +291,16 @@ for kind,*rest in B:
         para=doc.add_paragraph(); r=para.add_run("Note: "); r.bold=True; r.font.color.rgb=BRAND
         para.add_run(rest[0]).font.size=Pt(10)
     elif kind=="rule": doc.add_paragraph("")
+    elif kind=="img":
+        _ip=os.path.join(_ASSET_ROOT,rest[0])
+        if os.path.exists(_ip):
+            from PIL import Image as _PI
+            with _PI.open(_ip) as _im: _w,_h=_im.size
+            _wid=min(6.3,4.2*_w/_h)          # cap height at ~4.2in for tall images
+            doc.add_picture(_ip,width=Inches(_wid))
+            doc.paragraphs[-1].alignment=WD_ALIGN_PARAGRAPH.CENTER
+            _cp=doc.add_paragraph(); _cp.alignment=WD_ALIGN_PARAGRAPH.CENTER
+            _r=_cp.add_run(rest[1]); _r.italic=True; _r.font.size=Pt(9); _r.font.color.rgb=RGBColor(0x55,0x5B,0x66)
     elif kind=="dl":
         for term,defn in rest[0]:
             para=doc.add_paragraph(style="List Bullet")

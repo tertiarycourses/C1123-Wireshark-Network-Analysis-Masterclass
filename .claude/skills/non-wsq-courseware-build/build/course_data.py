@@ -1,8 +1,8 @@
 TITLE='Wireshark Network Analysis Masterclass'
 SHORT_TITLE='Wireshark Network Analysis Masterclass (C1123)'
 COURSE_CODE='C1123'
-VERSION='v4.0'
-VERSION_DATE='2 October 2026'
+VERSION='v5.0'
+VERSION_DATE='5 October 2026'
 ORG='Tertiary Infotech Academy Pte Ltd'
 UEN='UEN: 201200696W'
 TRAINER='Dr. Alfred Ang'
@@ -14,22 +14,197 @@ LEARNING_OUTCOMES=['LO1: Plan scoped captures and configure a reproducible analy
 TOPICS=[{'num': 1, 'code': '01', 'title': 'Introduction to Network Analysis and Wireshark', 'subtitle': 'Establish a trace baseline', 'concepts': ['A capture is a measurement at one observation point, not a complete network history.', 'Packet list, protocol details and bytes connect a summary to the underlying evidence.', 'Record interface, timestamp precision, dropped packets and capture scope before interpreting a trace.']}, {'num': 2, 'code': '02', 'title': 'Capture Methods and Capture Filters', 'subtitle': 'Plan capture placement', 'concepts': ['A switched access port normally observes its own traffic and broadcasts; SPAN or TAP placement changes visibility.', 'Capture filters use libpcap syntax before packets are stored; display filters hide or show stored packets.', 'Bound file size and duration; check capture drops before attributing missing packets to network loss.']}, {'num': 3, 'code': '03', 'title': 'Global Preferences and Troubleshooting Profiles', 'subtitle': 'Create an analyst profile', 'concepts': ['A profile bundles reproducible columns, coloring rules and protocol settings.', 'Name resolution can obscure numeric evidence and generate additional traffic; document the setting.', 'Protocol heuristics and TCP analysis preferences change interpretation, not the stored bytes.']}, {'num': 4, 'code': '04', 'title': 'Navigation and Coloring Techniques', 'subtitle': 'Color and annotate evidence', 'concepts': ['Color rules are applied in order; the first matching rule wins.', 'Temporary coloring is useful for a conversation; permanent rules support repeated triage.', 'Bookmarks and comments preserve the analyst path without changing the captured payload.']}, {'num': 5, 'code': '05', 'title': 'Time Values and Delay Types', 'subtitle': 'Separate path and server delay', 'concepts': ['Displayed delta depends on the current filter; capture delta does not.', 'SYN to SYN/ACK gives an initial path-related sample; request to response includes application processing.', 'One-sided timestamps cannot identify exactly which intermediate device delayed or dropped a packet.']}, {'num': 6, 'code': '06', 'title': 'Trace Statistics and VoIP Overview', 'subtitle': 'Summarize traffic and a voice stream', 'concepts': ['Protocol Hierarchy shows captured composition; byte share differs from packet share.', 'Conversations and Endpoints identify concentration; they do not alone prove malicious activity.', 'SIP signals a call while RTP carries media; jitter, loss and codec interpretation need stream context.']}, {'num': 7, 'code': '07', 'title': 'Display Filters', 'subtitle': 'Build a filter evidence matrix', 'concepts': ['Parentheses make mixed and/or expressions explicit.', 'Field existence and Boolean equality differ: tcp.flags.syn == 1 tests the bit.', 'Since Wireshark 3.6, != uses all-not-equal semantics; historical slides describing any-not-equal are obsolete.']}, {'num': 8, 'code': '08', 'title': 'TCP/IP Communications and Resolution', 'subtitle': 'Reconstruct an application dependency chain', 'concepts': ['ARP resolves a local next-hop MAC; DNS resolves a name to an address.', 'The destination IP stays end-to-end across routing while link-layer addresses change per hop.', 'Resolution, connection establishment and application exchange form a dependency chain.']}, {'num': 9, 'code': '09', 'title': 'DNS Traffic Analysis', 'subtitle': 'Diagnose DNS failure and delay', 'concepts': ['Transaction ID plus addresses and ports pair a query with its response.', 'NXDOMAIN reports that a name does not exist; it differs from silence or timeout.', 'DNS response time is a measured exchange, influenced by resolver and path behaviour.']}, {'num': 10, 'code': '10', 'title': 'ARP Traffic Analysis', 'subtitle': 'Verify link-local resolution', 'concepts': ['ARP requests are link-local broadcasts; replies usually return to the requester.', 'A repeated unresolved request suggests a local resolution problem, but a single trace may miss the reply.', 'MAC changes require corroboration before claiming duplicate IP or spoofing.']}, {'num': 11, 'code': '11', 'title': 'IPv4 Traffic Analysis', 'subtitle': 'Classify IPv4 scope and headers', 'concepts': ['TTL limits forwarding hops; it is not a latency measurement.', 'Broadcast and multicast use different addressing scopes and delivery rules.', 'Fragmentation fields describe packet handling; missing fragments can reflect capture limitations.']}, {'num': 12, 'code': '12', 'title': 'ICMP Traffic Analysis', 'subtitle': 'Interpret echo and unreachable messages', 'concepts': ['Echo requests/replies show an IP exchange; they do not guarantee an application works.', 'Destination unreachable messages quote the offending datagram.', 'ICMP may be filtered or rate-limited, so absence of a reply needs cautious interpretation.']}, {'num': 13, 'code': '13', 'title': 'UDP Traffic Analysis', 'subtitle': 'Follow datagrams and service refusal', 'concepts': ['UDP has no transport handshake or retransmission; the application may provide reliability.', 'A port number is a decoding hint; payload and context identify the application.', 'Following a UDP stream collects datagrams and does not invent missing data.']}, {'num': 14, 'code': '14', 'title': 'TCP Protocol Analysis', 'subtitle': 'Investigate retransmission and zero window', 'concepts': ['Sequence numbers count bytes; ACK numbers indicate the next expected byte.', 'Retransmission and duplicate ACK labels are heuristics sensitive to capture placement and completeness.', 'Zero window indicates receive-side flow control; it is distinct from network congestion.']}, {'num': 15, 'code': '15', 'title': 'Traffic Graphs', 'subtitle': 'Graph bytes, RTT and recovery', 'concepts': ['An I/O graph bins observed events; units and interval determine what it means.', 'TCP time-sequence graphs show byte progress, stalls and repeated sequence ranges.', 'RTT samples, application response time and throughput answer different questions.']}, {'num': 16, 'code': '16', 'title': 'HTTP and HTTP/2 Analysis', 'subtitle': 'Inspect HTTP outcomes and HTTP/2 frames', 'concepts': ['HTTP response codes describe application outcomes after transport delivery.', 'A response time contains more than network latency; pair the correct request and response.', 'HTTP/2 multiplexes frames; encrypted HTTP/2 needs authorised TLS secrets to inspect payload.']}, {'num': 17, 'code': '17', 'title': 'TLS-Encrypted Traffic Analysis', 'subtitle': 'Compare encrypted and decrypted views', 'concepts': ['Without session secrets, encrypted application records do not disclose HTTP payload.', 'A controlled key log enables authorised inspection of this synthetic TLS exchange.', 'A server RSA private key alone cannot decrypt modern ECDHE or TLS 1.3 sessions.']}, {'num': 18, 'code': '18', 'title': 'Ten Troubleshooting Steps and Reporting', 'subtitle': 'Produce an evidence-led incident report', 'concepts': ['Begin with scope and a baseline, then focus with endpoints, filters, time and graphs.', 'Separate observed facts from hypotheses and specify what new evidence would test them.', 'A useful report states affected flow, measurement, impact, recommended action and uncertainty.']}]
 DAY_THEMES={1:'Capture and analyst workflow',2:'Time, statistics, filters and DNS',3:'IP and transport diagnostics',4:'Graphs, applications and reporting'}
 LG_INTRO='This guide supports C1123, a four-day, 30-hour commercial short course. It includes detailed instructions for 18 self-contained labs using supplied synthetic packet captures.'
-LG_INTRO2='The revised v4.0 deck starts from the supplied v3 reference presentation. Current lab instructions, data and scripts are supplied here; the legacy external trace names are not required for the new activities.'
+LG_INTRO2='Version 5.0 aligns the slides, this guide and the lesson plan with the Tertiary Infotech house design. Every lab ships with its own synthetic capture, templates and verification script; the Expected Evidence figure in each lab shows the packet list you should reproduce.'
 LG_SETUP={'needs':['Windows or macOS laptop; Wireshark 4.6 or later from https://www.wireshark.org/download.html.','TShark CLI tools for automated fixture checks; Python 3 for scripts. Scapy and OpenSSL only if regenerating data.','Download the whole labs folder so captures, templates and scripts stay together.'], 'verify_text':'Confirm Wireshark opens branch-office.pcap. For command-line checks use:', 'verify_code':'tshark --version\npython3 --version','conventions':['Windows: use py -3 instead of python3. If tshark is not on PATH, use the Wireshark installation directory.','All packet addresses and names are synthetic. The generator sends no packets.','Steps assume you are inside the current lab folder. Clear filters between investigations.','4 days include 450 instructional minutes and 30 minutes of tea breaks each day; lunch is separate.']}
 LAB_NOTE='Use the README in the matching labs/lab-NN-title/ folder. Capture only with permission.'
 LG_NEXT_STEPS=['Repeat a lab with a fresh analyst profile.','Use the ten-step checklist on a new authorised capture.','Preserve packet numbers, filters and limitations in every report.']
 LG_GLOSSARY=[('Capture filter','libpcap expression limiting packets stored during capture.'),('Display filter','Wireshark expression selecting stored packets for viewing.'),('iRTT','Initial TCP round-trip sample from the handshake.'),('Retransmission','Repeated TCP byte range; interpretation depends on capture completeness.'),('Zero window','A receiver advertisement that no receive-buffer space is available.'),('TLS key log','Per-session secrets permitting authorised decryption of the matching session.'),('SPAN','Switch mirroring of selected traffic to a sensor port.'),('TAP','An inline observation device supplying link traffic to a sensor.')]
-VERSION_HISTORY=[('4.0','2 October 2026','Revised from the supplied v3 deck; current guidance, visuals and 18 self-contained labs.','Dr. Alfred Ang')]
+VERSION_HISTORY=[('4.0','2 October 2026','Revised from the supplied v3 deck; current guidance, visuals and 18 self-contained labs.','Dr. Alfred Ang'),
+ ('5.0','5 October 2026','Deck rebuilt on the house non-WSQ engine (C735 design system): full admin opener, core-concepts section, reference diagrams re-presented as captioned visuals, TShark evidence visuals per lab, per-topic schedule with day dividers and breaks.','Dr. Alfred Ang')]
+
+# ------------------------------------------------------------------ schedule (per-topic, 480 training min/day incl. tea; lunch excluded)
 def SCHEDULE(lab_titles):
- result={}
- groups={1:[1,2,3,4],2:[5,6,7,8,9],3:[10,11,12,13,14],4:[15,16,17,18]}
- labmins={1:180,2:225,3:225,4:240}
- for day,nums in groups.items():
-  demo=420-labmins[day]
-  blocks=[(90,'topic','Concepts and demonstrations: topics '+', '.join(map(str,nums))),(15,'break','Tea break'),(60,'lab',lab_titles(nums)),(45,'topic','Evidence interpretation and worked examples'),(60,'lunch','Lunch'),(90,'lab','Continue labs: '+lab_titles(nums)),(15,'break','Tea break'),(demo-135,'topic','Worked examples and topic synthesis'),(labmins[day]-150,'lab','Complete lab investigations and findings'),(30,'recap','Learning reinforcement, topic recap and reflection')]
+ T={t['num']:t['title'] for t in TOPICS}
+ def topic(n): return 'Topic %d — %s (concepts + demonstration)'%(n,T[n])
+ def lab(n): return 'Hands-on: '+lab_titles([n])
+ plan={
+  1:[(20,'admin','Welcome, trainer and learner introductions, ground rules, course objectives and lab setup check'),
+     (30,'topic',topic(1)),(40,'lab',lab(1)),(15,'break','Tea break'),
+     (30,'topic',topic(2)),(75,'lab',lab(2)),(60,'lunch','Lunch break'),
+     (30,'topic',topic(3)),(60,'lab',lab(3)),(15,'break','Tea break'),
+     (30,'topic',topic(4)),(75,'lab',lab(4)),
+     (30,'lab','Guided practice: re-run Labs 1–4 with your own analyst profile; worked examples'),
+     (30,'recap','Day 1 recap, learning reinforcement and Q&A')],
+  2:[(15,'recap','Day 1 review and Day 2 objectives'),
+     (25,'topic',topic(5)),(50,'lab',lab(5)),(15,'break','Tea break'),
+     (25,'topic',topic(6)),(50,'lab',lab(6)),
+     (30,'lab','Guided practice: timing and statistics worked examples (Labs 5–6)'),(60,'lunch','Lunch break'),
+     (15,'topic',topic(7)),(30,'lab',lab(7)),(15,'topic',topic(8)),(30,'lab',lab(8)),(15,'break','Tea break'),
+     (30,'topic',topic(9)),(60,'lab',lab(9)),
+     (45,'lab','Guided practice: filter, resolution and DNS worked examples (Labs 7–9)'),
+     (30,'recap','Day 2 recap, learning reinforcement and Q&A')],
+  3:[(15,'recap','Day 2 review and Day 3 objectives'),
+     (25,'topic',topic(10)),(50,'lab',lab(10)),(15,'break','Tea break'),
+     (25,'topic',topic(11)),(50,'lab',lab(11)),
+     (30,'lab','Guided practice: ARP and IPv4 worked examples (Labs 10–11)'),(60,'lunch','Lunch break'),
+     (15,'topic',topic(12)),(30,'lab',lab(12)),(15,'topic',topic(13)),(30,'lab',lab(13)),(15,'break','Tea break'),
+     (30,'topic',topic(14)),(60,'lab',lab(14)),
+     (45,'lab','Guided practice: transport-layer worked examples (Labs 12–14)'),
+     (30,'recap','Day 3 recap, learning reinforcement and Q&A')],
+  4:[(15,'recap','Day 3 review and Day 4 objectives'),
+     (25,'topic',topic(15)),(50,'lab',lab(15)),(15,'break','Tea break'),
+     (30,'topic',topic(16)),(75,'lab',lab(16)),(60,'lunch','Lunch break'),
+     (30,'topic',topic(17)),(60,'lab',lab(17)),(15,'break','Tea break'),
+     (30,'topic',topic(18)),(75,'lab',lab(18)),
+     (30,'lab','Synthesis: present your evidence-led incident report findings'),
+     (30,'recap','Course recap, next steps and Q&A')],
+ }
+ fmt=lambda x:f'{x//60}:{x%60:02d}'
+ out={}
+ for day,blocks in plan.items():
   now=9*60+30; rows=[]
-  for minutes,kind,text in blocks:
-   end=now+minutes;fmt=lambda x:f'{x//60:02d}:{x%60:02d}'
-   rows.append((fmt(now),fmt(end),minutes,kind,text));now=end
-  result[day]=(DAY_THEMES[day],rows)
- return result
+  assert sum(m for m,k,_ in blocks if k!='lunch')==480, day
+  for m,k,text in blocks:
+   rows.append((fmt(now),fmt(now+m),m,k,text)); now+=m
+  out[day]=(DAY_THEMES[day],rows)
+ return out
+
+# Deck markers that mirror the schedule above
+DAY_START_TOPIC={5:2,10:3,15:4}
+BREAK_AFTER_TOPIC={1:('Tea Break','15 minutes'),2:('Lunch Break','1 hour'),3:('Tea Break','15 minutes'),
+ 4:('End of Day 1','See you tomorrow'),
+ 5:('Tea Break','15 minutes'),6:('Lunch Break','1 hour'),8:('Tea Break','15 minutes'),9:('End of Day 2','See you tomorrow'),
+ 10:('Tea Break','15 minutes'),11:('Lunch Break','1 hour'),13:('Tea Break','15 minutes'),14:('End of Day 3','See you tomorrow'),
+ 15:('Tea Break','15 minutes'),16:('Lunch Break','1 hour'),17:('Tea Break','15 minutes')}
+
+# ------------------------------------------------------------------ admin / opener
+TRAINER_CERT='PhD — specialises in networking, cyber security, cloud and AI.'
+TRAINER_DELIVERS='Courses on network analysis, cyber security, cloud and AI for Tertiary Infotech Academy.'
+ICE_BREAKER=['Your name and organisation / role.',
+ 'Your experience with Wireshark or network troubleshooting (if any).',
+ 'A slow or broken network problem you would like to be able to explain with packets.']
+LO_TITLES=['Capture & profile','Navigate & time','Core protocols','TCP & applications','Evidence reporting']
+PORTAL_SHOT='lms-portal.png'
+LAB_SHOT_KICKER='EXPECTED EVIDENCE'
+LAB_SHOTS={n:[(f'lab-{n:02d}-evidence.png','Expected Evidence — '+t,
+  'Produced by TShark 4.6 from this lab\'s own synthetic capture with the lab filter(s) applied — your packet list should match.')]
+  for n,t in LAB_SLUGS.items()}
+LAB_SHOTS={n:[(f,'Expected Evidence — Lab %d'%n,c)] for n,[(f,_,c)] in LAB_SHOTS.items()}
+
+COURSE_OVERVIEW=dict(
+ section_title='Network Analysis Fundamentals',
+ concepts_title='What is Wireshark?',
+ concepts=[('Packet analyzer','Captures packets and presents every field it can decode — a measuring device for the network.'),
+  ('Free and open source','Cross-platform (Windows, macOS, Linux) with TShark as its command-line twin.'),
+  ('3,000+ protocols','Dissectors decode Ethernet to HTTP/2, DNS, TLS, SIP/RTP and more.'),
+  ('Evidence, not opinion','Every claim cites a frame number, a filter and a measurement.')],
+ framework_title='Who Uses Wireshark — and Why',
+ framework=[('Network administrators','Troubleshoot slow and failing connections.'),
+  ('Security analysts','Examine suspicious conversations and indicators.'),
+  ('QA and developers','Verify and debug protocol implementations.'),
+  ('Support engineers','Prove where a delay or failure actually occurs.'),
+  ('Learners','See how network protocols really behave on the wire.'),
+  ('Incident responders','Preserve packet evidence for a report.')],
+ statement=dict(headline='Capture the evidence. Explain the uncertainty.',
+  body='A trace is a measurement at one observation point — this course teaches you to say exactly what it proves and what it does not.',kicker='THE ANALYST MINDSET'),
+ pillars_title='The Four Days at a Glance',
+ pillars=[('Capture & navigate',['Place the capture point correctly','Build a reproducible analyst profile','Colour, time and filter efficiently']),
+  ('Protocols & transport',['DNS, ARP, IPv4, ICMP, UDP evidence','TCP handshake, loss, retransmission','Zero window and recovery']),
+  ('Applications & reporting',['I/O, RTT and Stevens graphs','HTTP outcomes, HTTP/2 and TLS','An evidence-led incident report'])],
+ arc_title='How Every Lab Progresses',
+ arc=['Open the lab\'s own synthetic capture — no live network traffic is needed.',
+  'Apply the lab filter and locate the frames that answer the question.',
+  'Record frame numbers, measurements and one limitation in outputs/findings.md.',
+  'Run scripts/verify.py — it confirms the capture facts your findings rely on.'],
+)
+
+NEXT_STEPS=dict(title='Continue Your Learning',items=[
+ 'All course material stays on the LMS at https://lms-tms.tertiaryinfotech.com.',
+ 'The 18 labs and their captures are in the course GitHub repository — re-run them any time.',
+ 'Apply the ten-step troubleshooting checklist to an authorised capture at work.',
+ 'Explore networking and cyber-security courses at www.tertiarycourses.com.sg.'])
+THANK_YOU=dict(kicker='THANK YOU FOR ATTENDING',
+ body='Keep the evidence, explain the uncertainty — and keep practising with the 18 labs on your own machine.')
+
+# ------------------------------------------------------------------ per-topic visual slides (images under courseware/assets/)
+D='reference-diagrams/'
+TOPIC_SLIDES={
+ 1:[('text_image','The TCP/IP and OSI Models',['The OSI model has seven layers; TCP/IP folds them into four.','Wireshark\'s Packet Details pane is ordered the same way — frame, Ethernet, IP, TCP/UDP, application.','Locate each fault at a layer before you choose a filter.'],D+'ref-020.png','OSI layers mapped to the TCP/IP model','REFRESHER'),
+    ('text_image','Building a Packet',['Each layer wraps the one above: an application payload gains TCP, IP and Ethernet headers.','MAC addresses change at every hop; IP addresses stay end-to-end (unless NAT rewrites them).','Ports identify the conversation on each host.'],D+'ref-024.png','Encapsulation of an FTP request from client A to server A','ENCAPSULATION'),
+    ('text_image','Data Flow Through the Network',['Data passes down the sender\'s stack, across switches and routers, and up the receiver\'s stack.','Switches forward on MAC; routers forward on IP.','Where you capture decides which hops you can see.'],D+'ref-023.png','Process-to-process, host-to-host and hop-by-hop delivery','DATA FLOW'),
+    ('text_image','Inside Wireshark',['The capture engine collects packets through libpcap / Npcap.','Wiretap reads and writes trace formats: pcap, pcapng, snoop and more.','Dissectors decode each protocol; display filters operate on the dissected fields.'],D+'ref-039.png','Packet processing elements (the GUI is Qt-based in current releases)','ARCHITECTURE'),
+    ('text_image','The Wireshark Window',['Packet List — one summary row per frame.','Packet Details — the decoded protocol tree.','Packet Bytes — the raw hex for the selected field.','Status bar — packet counts, profile and file information.'],D+'ref-042.png','The three main panes plus toolbars and status bar','USER INTERFACE'),
+    ('shot',D+'ref-043.png','The Main Toolbar','Start/stop capture, open/save, find and go-to packet, colourise and zoom controls','USER INTERFACE'),
+    ('shot',D+'ref-044.png','The Display Filter Toolbar','Green = valid expression, red = invalid; bookmark saved filters and add filter buttons','USER INTERFACE'),
+    ('text_image','Status Bar and Intelligent Scrollbar',['The status bar shows packets captured vs. displayed and the active profile.','The intelligent scrollbar mirrors packet colouring — red/black bands reveal resets, aborts or low-TTL packets at a glance.'],D+'ref-046.png','Coloured scrollbar bands mark problem packets','USER INTERFACE')],
+ 2:[('text_image','Where to Tap Into the Network',['Client A complains about reaching the servers — where do you put the analyzer?','Capture as close as possible to the complaining host first, then move toward the servers.','Each point sees only the traffic that physically passes it.'],D+'ref-065.png','Choose the observation point before you capture','CAPTURE PLACEMENT'),
+    ('two_col','What a Switch Port Can See','Switch port (default)',['Broadcast traffic','Multicast traffic (if forwarded)','Traffic to and from your own host','Not other hosts\' unicast traffic'],'Ways to see more',['Hub in half-duplex segment (lab only)','Network TAP — passive, in-line','SPAN / port mirroring on the switch','Capture on the target host itself'],'SWITCHED NETWORKS'),
+    ('text_image','Test Access Points (TAPs)',['A TAP sits in-line and passively copies traffic to the analyzer.','Full-duplex TAPs forward both directions — and can pass physical-layer errors.','Aggregating TAPs merge both directions onto one monitor port.'],D+'ref-069.png','A non-aggregating TAP with two monitor ports','TAPS'),
+    ('shot',D+'ref-070.png','Aggregating vs Non-aggregating TAPs','Non-aggregating: one port per direction. Aggregating: both directions combined on one port — can oversubscribe at high load','TAPS'),
+    ('text_image','SPAN / Port Mirroring',['The switch copies traffic from source ports or VLANs to a destination port.','Mirrored traffic can drop under load and normally excludes errored frames.','Example (Cisco): monitor session 1 source interface g1/0/11 both.'],D+'ref-072.png','SPAN copies transmitted and received frames to the analyzer port','SPAN'),
+    ('text_image','Wireless Capture',['Promiscuous mode on Wi-Fi usually shows only your own traffic.','Monitor mode captures 802.11 frames from all stations on a channel — needs a supporting adapter/driver.','Decrypting WPA2 traffic requires the passphrase and the 4-way handshake.'],D+'ref-079.png','Wireless capture depends on the adapter mode','WIRELESS'),
+    ('two_col','Capture Filters vs Display Filters','Capture filter (BPF)',['Applied before packets are stored','Syntax: host 10.1.1.5 and tcp port 80','Discarded packets cannot be recovered','Use to limit file size on busy links'],'Display filter',['Applied to packets already captured','Syntax: ip.addr == 10.1.1.5 && tcp.port == 80','Clear it to see everything again','Use for analysis and evidence'],'FILTERING')],
+ 3:[('text_image','Configuration Profiles',['A profile bundles preferences, columns, colouring rules and filter buttons.','Switch profiles from the status bar or Edit > Configuration Profiles.','Create task profiles: Troubleshooting, Security, VoIP, Wireless.'],D+'ref-048.png','Right-click the Profile area in the status bar to switch or create','PROFILES'),
+    ('text_image','Where Settings Live',['Help > About Wireshark > Folders shows personal and global configuration paths.','Copy a profile folder to share it with your team.','Keep a clean Default profile untouched.'],D+'ref-112.png','The Folders tab lists personal configuration locations','CONFIGURATION'),
+    ('cards3','Preferences That Change Interpretation',[('Name resolution',['Off by default for evidence','MAC/transport names are local look-ups','Network names cause extra DNS traffic']),('Columns',['Add fields as columns (Apply as Column)','e.g. tcp.time_delta, http.host','Save them in the profile']),('Protocol settings',['TCP: calculate conversation timestamps','TCP: relative sequence numbers','TLS: key log file per lab'])],'PREFERENCES'),
+    ('text_image','Apply as Column',['Right-click any field in Packet Details > Apply as Column.','Sort the new column to find extremes — largest delay, largest window, error codes.','Columns are saved in the active profile.'],D+'ref-058.png','Right-click | Apply As Column','PRODUCTIVITY')],
+ 4:[('text_image','Colouring Rules',['Rules are evaluated top-down — the first match colours the packet.','Default rules flag Bad TCP, HTTP, DNS, ARP, ICMP errors and more.','View > Coloring Rules to edit, import or export a rule set.'],D+'ref-115.png','The coloring rules list is processed in order','COLOURING'),
+    ('text_image','Why Is a Packet This Colour?',['Expand the Frame section of Packet Details.','Coloring Rule Name and Coloring Rule String show which rule matched.','Use this to explain colours in a report.'],D+'ref-116.png','Frame > Coloring Rule Name / String','COLOURING'),
+    ('text_image','Colourise a Conversation',['Right-click a packet > Colorize Conversation to tag a TCP/UDP stream temporarily.','Ten temporary colours make parallel conversations easy to tell apart.','View > Colorize Conversation > Reset to clear.'],D+'ref-117.png','Temporary conversation colouring','COLOURING'),
+    ('text_image','Marking and Annotating Packets',['Mark (Ctrl+M) for quick navigation — marks are lost when the file closes.','Packet comments are saved in pcapng and travel with the evidence.','Time Shift corrects clock offsets between captures.'],D+'ref-057.png','Right-click | Packet Comment','ANNOTATION'),
+    ('text_image','Navigation Shortcuts',['Ctrl+G — go to packet number.','Ctrl+F — find by display filter, hex or string.','Ctrl+. / Ctrl+, — next/previous packet in the conversation.','Ctrl+Space — collapse/expand the Packet Details tree.'],D+'ref-055.png','Edit | Mark / Ignore packets','NAVIGATION')],
+ 5:[('text_image','Time Display Formats',['View > Time Display Format chooses absolute, relative or delta time.','Seconds Since Beginning of Capture — default overview.','Seconds Since Previous Displayed Packet — finds gaps in a filtered view.'],D+'ref-181.png','Precision depends on the capture hardware and file format','TIME VALUES'),
+    ('text_image','Captured vs Displayed Delta',['Delta since previous CAPTURED packet ignores the filter.','Delta since previous DISPLAYED packet changes when you change the filter.','State which delta you used in every finding.'],D+'ref-182.png','Same packets — different deltas','TIME VALUES'),
+    ('text_image','End-to-End Path Delay',['SYN → SYN/ACK gives the initial round-trip time (iRTT) near the client.','Request → response adds server processing time.','Large gaps after an ACK point to the server, not the path.'],D+'ref-189.png','Sort a delta-time column to find the largest gaps','DELAY TYPES'),
+    ('cards3','Three Kinds of Delay',[('Path delay',['SYN → SYN/ACK (iRTT)','tcp.analysis.ack_rtt','Affects every exchange']),('Server delay',['ACK → first response byte','http.time for HTTP','Grows with server load']),('Client delay',['Response → next request','Think time or app processing','Often not a network problem'])],'DIAGNOSIS'),
+    ('content','Time Reference and Timestamps',['Ctrl+T sets a time reference — times are then measured from that packet.','Use a reference per conversation to time one transaction in isolation.','Timestamp precision is set by the capture system; you cannot add precision later.','Clock offsets between capture points need Time Shift before comparing.'],'TOOLS')],
+ 6:[('text_image','Capture File Properties',['Statistics > Capture File Properties: file, time span, interface and drop counts.','Check packets dropped before blaming the network for loss.','Record these facts at the start of every analysis.'],D+'ref-209.png','Statistics | Protocol Hierarchy shows the protocol mix','TRACE STATISTICS'),
+    ('text_image','Conversations and Endpoints',['Statistics > Conversations lists pairs at Ethernet, IPv4/6, TCP and UDP level.','Sort by Bytes to find the most active conversation.','Right-click a row to filter on it.'],D+'ref-214.png','Statistics | Conversations — TCP tab, sorted by bytes','TRACE STATISTICS'),
+    ('text_image','Packet Lengths',['Statistics > Packet Lengths shows the size distribution.','Many tiny packets moving bulk data suggest inefficient application behaviour.','A full-size Ethernet frame is 1518 bytes; TCP payload at MTU 1500 is 1460.'],D+'ref-216.png','Frame size components','TRACE STATISTICS'),
+    ('text_image','Flow Graph and HTTP Statistics',['Statistics > Flow Graph draws the exchange between hosts as a ladder diagram.','Statistics > HTTP > Packet Counter summarises requests and response codes.','Use both to explain sequence and outcome in a report.'],D+'ref-223.png','Statistics | HTTP | Packet Counter','TRACE STATISTICS'),
+    ('text_image','Voice over IP (VoIP)',['SIP signals the call: INVITE, 100 Trying, 180 Ringing, 200 OK, ACK.','RTP carries the media; gaps in RTP sequence numbers indicate loss.','Telephony > VoIP Calls, SIP Flows and RTP Streams analyse calls.'],D+'ref-291.png','SIP call set-up between two phones and a telephony server','VOIP')],
+ 7:[('text_image','Display Filter Operators',['Comparison: == != > < >= <= (or eq ne gt lt ge le).','Logical: && (and), || (or), ! (not); parentheses make intent explicit.','Strings in double quotes; contains and matches search payload text.'],D+'ref-088.png','Comparison operators with C-like and English forms','SYNTAX'),
+    ('two_col','The != Trap (Wireshark 3.6+)','ip.addr != 10.2.4.1',['Means ALL ip.addr fields are not 10.2.4.1','Excludes every packet to OR from 10.2.4.1','This is the current behaviour'],'ip.addr ~= 10.2.4.1',['"Any not equal" — the old meaning of !=','Keeps packets where either address differs','Prefer !(ip.addr == 10.2.4.1) for clarity'],'COMMON MISTAKE'),
+    ('content','Filter Building Techniques',['Right-click a field > Apply as Filter / Prepare as Filter.','Start typing — autocomplete lists valid field names.','Save frequent filters as filter buttons in your profile.','Test field existence (tcp.analysis.flags) vs a value (tcp.flags.syn == 1).'],'TECHNIQUES'),
+    ('tiles','Filters You Will Use All Week',[('arp || icmp','Local resolution and reachability'),('dns.flags.rcode != 0','DNS errors'),('tcp.flags.syn == 1 && tcp.flags.ack == 0','Connection attempts'),('tcp.analysis.flags','All TCP expert warnings'),('http.response.code >= 400','Client and server errors'),('frame.time_delta_displayed > 1','Gaps over 1 s in the view')],'CHEAT SHEET')],
+ 8:[('text_image','The TCP/IP Protocol Suite',['Application: HTTP, DNS, SMTP, SNMP …','Transport: TCP (reliable) and UDP (best-effort).','Network: IP, ICMP, ARP sits between network and link.'],D+'ref-022.png','Where common protocols sit','PROTOCOL SUITE'),
+    ('text_image','Switching Overview',['Switches learn MAC addresses and forward frames within a broadcast domain.','Source and destination MAC stay the same across a switch.','ARP resolves the next-hop MAC before the first frame is sent.'],D+'ref-029.png','A frame crossing a switch keeps its MAC addresses','LAYER 2'),
+    ('text_image','Routing Overview',['Routers forward on destination IP and rewrite the link-layer addresses.','TTL decreases by one at every router hop.','The IP addresses are unchanged across routers (without NAT).'],D+'ref-030.png','MAC addresses change hop-by-hop; IP addresses stay end-to-end','LAYER 3'),
+    ('text_image','Firewalls and NAT',['NAT/PAT rewrites addresses and ports — capture on both sides to correlate.','Firewalls may drop silently or reply with RST / ICMP unreachable.','A proxy creates two separate TCP connections.'],D+'ref-031.png','Address translation changes what each capture point sees','MIDDLEBOXES'),
+    ('flow','The Dependency Chain',['ARP resolves the gateway MAC','DNS resolves the server name','TCP handshake opens the connection','Application request and response','Teardown: FIN or RST'],'RECONSTRUCT THE STORY')],
+ 9:[('text_image','How DNS Works',['The client asks its resolver; the resolver walks the hierarchy or answers from cache.','Queries normally use UDP 53; large answers and zone transfers use TCP.','Transaction ID pairs each response with its query.'],D+'ref-028.png','Name resolution through a local resolver','DNS'),
+    ('cards3','Reading DNS Evidence',[('Success',['rcode 0 (NoError)','Answer records present','Check TTL and address']),('Failure',['rcode 3 = NXDOMAIN','rcode 2 = SERVFAIL','Name or zone problem']),('Silence',['Query with no response','Retries after timeout','Path, firewall or resolver'])],'DNS OUTCOMES'),
+    ('content','Useful DNS Filters',['dns.flags.response == 0 — queries only.','dns.flags.rcode == 3 — name does not exist.','dns.time > 0.5 — responses slower than 500 ms.','dns.qry.name contains "example" — one domain family.'],'FILTERS')],
+ 10:[('cards3','ARP in Practice',[('Request',['Broadcast to ff:ff:ff:ff:ff:ff','"Who has 192.0.2.20? Tell 192.0.2.10"','arp.opcode == 1']),('Reply',['Unicast back to the requester','"192.0.2.20 is at 02:00:…"','arp.opcode == 2']),('Gratuitous',['Sender announces its own IP','Used after failover / IP change','arp.isgratuitous'])],'ADDRESS RESOLUTION'),
+    ('two_col','ARP Problems to Recognise','Symptoms',['Repeated requests with no reply','Duplicate IP address detected warnings','One IP mapped to two MAC addresses','Excessive ARP broadcasts'],'Possible causes',['Host down or wrong subnet','Two hosts configured with the same IP','ARP spoofing — corroborate first','Scanning or misconfigured devices'],'DIAGNOSIS')],
+ 11:[('text_image','IPv4 Header Essentials',['TTL — hops remaining; not a measure of time.','Protocol — 1 ICMP, 6 TCP, 17 UDP.','Flags/Fragment offset — fragmentation handling.','DSCP — quality-of-service marking.'],D+'ref-137.png','Header layout (TCP header shown; IPv4 uses the same 32-bit rows)','IPV4'),
+    ('cards3','Address Scope',[('Unicast',['One sender to one receiver','Most application traffic','ip.dst == host']),('Broadcast',['All hosts on the subnet','255.255.255.255 or directed','Not forwarded by routers']),('Multicast',['224.0.0.0/4 group addresses','224.0.0.1 = all hosts','Joined with IGMP'])],'SCOPE'),
+    ('content','IPv4 Filters and Checks',['ip.ttl < 10 — packets close to expiring.','ip.flags.mf == 1 || ip.frag_offset > 0 — fragments.','ip.dst == 224.0.0.0/4 — all multicast.','Missing fragments may be a capture limitation — check drops first.'],'FILTERS')],
+ 12:[('cards3','ICMP Messages to Know',[('Echo',['Type 8 request, Type 0 reply','ping / reachability','Match on identifier + sequence']),('Unreachable',['Type 3','Code 3 = port unreachable','Code 1 = host unreachable']),('Time exceeded',['Type 11','TTL expired in transit','How traceroute works'])],'ICMP'),
+    ('content','Interpreting ICMP Evidence',['An unreachable message quotes the original IP header — read it to find the failed flow.','No echo reply can mean filtering, not a down host.','Rate-limited ICMP can hide real loss.','icmp.type == 3 && icmp.code == 3 finds closed UDP ports.'],'INTERPRETATION')],
+ 13:[('text_image','TCP vs UDP',['UDP: connectionless, 8-byte header, no retransmission or ordering.','TCP: connection-oriented, reliable, ordered, flow-controlled.','Choose the analysis by the transport: UDP problems show up at the application.'],D+'ref-141.png','Header and feature comparison','TRANSPORT'),
+    ('text_image','Ports and Sockets',['A socket is IP address + port.','A conversation is the pair of sockets — the 5-tuple with the protocol.','Ephemeral client ports change per connection.'],D+'ref-144.png','Socket pairs identify each conversation','SOCKETS'),
+    ('content','Analysing UDP',['Follow > UDP Stream reassembles a datagram conversation.','A UDP request answered by ICMP port unreachable = closed port.','Missing responses need application-level timing to interpret.','Decode As lets you dissect traffic on non-standard ports.'],'TECHNIQUES')],
+ 14:[('text_image','The Three-Way Handshake',['SYN → SYN/ACK → ACK establishes the connection.','Options are negotiated here: MSS, window scale, SACK permitted.','The SYN → SYN/ACK gap is the initial RTT seen by the client.'],D+'ref-138.png','Connection establishment','TCP'),
+    ('text_image','Sequence Numbers and Error Recovery',['Sequence numbers count bytes sent; ACK = next byte expected.','A gap triggers duplicate ACKs and retransmission.','Wireshark shows relative sequence numbers by default.'],D+'ref-139.png','Lost segment recovered after the receiver asks again','TCP'),
+    ('text_image','TCP Windowing',['The receive window advertises buffer space available.','Window scaling multiplies it for high-bandwidth paths.','Window = 0 (Zero Window) stops the sender until a window update.'],D+'ref-140.png','Flow control with window advertisements','FLOW CONTROL'),
+    ('text_image','Retransmissions',['Timeout retransmission (RTO): no ACK in time — backs off exponentially.','Fast retransmission: three duplicate ACKs trigger an early resend.','Spurious retransmissions repeat data that was already received.'],D+'ref-162.png','Retransmission timers on a lossy path','LOSS'),
+    ('tiles','TCP Expert Flags',[('Retransmission','Data sent again'),('Duplicate ACK','Receiver still waiting for a gap'),('Previous segment not captured','Gap — loss or capture drop'),('Zero Window','Receiver buffer full'),('Window Full','Sender filled the advertised window'),('RST','Abrupt connection reset')],'EXPERT INFORMATION'),
+    ('text_image','TCP Preferences',['Analyze TCP sequence numbers — enables tcp.analysis.* flags.','Calculate conversation timestamps — adds tcp.time_delta.','Relative sequence numbers make streams readable.'],D+'ref-147.png','Edit | Preferences | Protocols | TCP','PREFERENCES')],
+ 15:[('text_image','I/O Graphs',['Statistics > I/O Graphs plots packets, bytes or bits per interval.','Add graphs with filters — e.g. total vs tcp.analysis.flags.','Use log scale and moving averages to compare very different values.'],D+'ref-251.png','Multiple graphs with different filters on one chart','GRAPHS'),
+    ('shot',D+'ref-253.png','Reading an I/O Graph','Drops in throughput that line up with TCP expert events point to the cause','GRAPHS'),
+    ('text_image','Round Trip Time Graph',['Statistics > TCP Stream Graphs > Round Trip Time.','Graphs are unidirectional — pick the data-sending direction.','Spikes show where the path or receiver was slow to acknowledge.'],D+'ref-279.png','RTT per acknowledged segment','GRAPHS'),
+    ('text_image','Time/Sequence (Stevens) Graph',['Sequence number vs time — the slope is throughput.','Flat steps reveal stalls such as zero window.','Vertical repeats indicate retransmissions.'],D+'ref-283.png','A flat region marks a zero-window stall','GRAPHS'),
+    ('text_image','Window Scaling Graph',['Plots the receiver\'s advertised window alongside bytes in flight.','When bytes in flight meet the window, the receiver is the bottleneck.','A collapsing window points at the receiving application.'],D+'ref-289.png','Stable window, instability and zero window','GRAPHS')],
+ 16:[('cards3','HTTP Response Codes',[('2xx / 3xx',['200 OK','301/302 redirect','304 not modified']),('4xx client',['400 bad request','403 forbidden','404 not found']),('5xx server',['500 internal error','502 bad gateway','503 unavailable'])],'HTTP'),
+    ('text_image','Follow the Stream',['Right-click > Follow > TCP Stream (or HTTP Stream) reassembles the conversation.','Client data in red, server data in blue.','The filter changes to tcp.stream == N — clear it to return.'],D+'ref-240.png','Follow Stream reassembles the transferred data','REASSEMBLY'),
+    ('text_image','Export HTTP Objects',['File > Export Objects > HTTP lists every transferred object.','Save files for inspection — handle unknown content safely.','http.time measures each response time.'],D+'ref-054.png','File | Export Objects | HTTP','EXPORT'),
+    ('two_col','HTTP/1.1 vs HTTP/2','HTTP/1.1',['Text headers, one request at a time per connection','Readable directly in the packet list','http.request.method, http.response.code'],'HTTP/2',['Binary frames multiplexed into streams','Usually inside TLS (ALPN h2)','http2.type, http2.streamid; Decode As for clear-text test ports'],'PROTOCOLS')],
+ 17:[('cards3','TLS Handshake Evidence',[('Client Hello',['SNI = requested server name','Offered versions and ciphers','tls.handshake.type == 1']),('Server Hello',['Chosen version and cipher','Certificate (TLS 1.2)','tls.handshake.type == 2']),('Application Data',['Encrypted records','Sizes and timing still visible','tls.record.content_type == 23'])],'TLS'),
+    ('two_col','Decrypting TLS — Authorised Only','Works',['Key log file from the client (SSLKEYLOGFILE)','Preferences > Protocols > TLS > (Pre)-Master-Secret log filename','Works for TLS 1.2 and TLS 1.3'],'Does not work',['RSA private key with (EC)DHE or TLS 1.3 sessions','Captures without the matching session secrets','Anything you are not authorised to inspect'],'DECRYPTION'),
+    ('flow','Encrypted vs Decrypted View',['Open the TLS capture — only handshake and Application Data','Note what metadata is still visible','Load the lab key log file','HTTP requests and responses appear','Remove the key log before the next lab'],'LAB 17 PREVIEW')],
+ 18:[('flow','Ten-Step Troubleshooting Method',['Baseline "normal" traffic','Check conversations and endpoints','Apply focused filters and colour','Measure time and TCP evidence','Graph, follow streams and report'],'METHOD'),
+    ('text_image','Export and Preserve Evidence',['File > Export Specified Packets saves only the relevant frames.','Export Packet Dissections produces text/CSV for reports.','Keep the original capture unchanged and record its hash.'],D+'ref-248.png','File | Export Packet Dissections','EVIDENCE'),
+    ('cards3','Writing the Incident Report',[('Observed facts',['Frame numbers','Filters used','Measured times and counts']),('Interpretation',['What the evidence suggests','Alternative explanations','Confidence level']),('Next actions',['Further captures needed','Owner and system to check','Limitations of this trace'])],'REPORTING')],
+}
+

@@ -8,7 +8,7 @@ Learn to turn packet captures into evidence for network and application troubles
 | Programme | Non-WSQ commercial short course |
 | Duration | 4 days / 30 instructional hours |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wireshark-network-analysis-masterclass.html) |
-| Current version | v4.0 — 2 October 2026 |
+| Current version | v5.0 — 5 October 2026 |
 
 ## About the course
 
@@ -72,8 +72,8 @@ Each lab has its own README, captures, mock data, scripts, observation templates
 - [LG-Wireshark Network Analysis Masterclass (C1123).pdf](courseware/LG-Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29.pdf)
 - [LP-Wireshark Network Analysis Masterclass (C1123).docx](courseware/LP-Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29.docx)
 - [LP-Wireshark Network Analysis Masterclass (C1123).pdf](courseware/LP-Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29.pdf)
-- [Wireshark Network Analysis Masterclass (C1123)-v4.0.pdf](courseware/Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29-v4.0.pdf)
-- [Wireshark Network Analysis Masterclass (C1123)-v4.0.pptx](courseware/Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29-v4.0.pptx)
+- [Wireshark Network Analysis Masterclass (C1123)-v5.0.pdf](courseware/Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29-v5.0.pdf)
+- [Wireshark Network Analysis Masterclass (C1123)-v5.0.pptx](courseware/Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29-v5.0.pptx)
 - [Learner Guide Markdown](LG-Wireshark%20Network%20Analysis%20Masterclass%20%28C1123%29.md)
 - [All lab activities](labs/README.md)
 
@@ -81,7 +81,7 @@ Each lab has its own README, captures, mock data, scripts, observation templates
 
 Start with the Learner Guide or a lab README. Wireshark 4.6 or later is recommended. TShark and Python 3 enable the fixture checks and CSV export scripts. Scapy and OpenSSL are only required when regenerating mock captures. On Windows, use `py -3` in place of `python3` and add the Wireshark installation directory to PATH.
 
-The supplied original v3 deck was copied and adapted for v4.0. Current topic sequences retain useful reference diagrams and screenshots; legacy external-file procedures and repeated solutions are replaced with the new lab activities. Detailed steps are in the LG and lab READMEs.
+Version 5.0 rebuilds the slide deck on the Tertiary Infotech house design used across the non-WSQ catalogue. Each topic opens with concept and diagram slides, and each lab walks through an overview, one slide per step, a "Test it" check and an **Expected Evidence** packet list. TShark produces that packet list from the lab's own capture, so you can compare your result directly. Tea, lunch and day-divider slides follow the Lesson Plan. Detailed steps are in the LG and the lab READMEs.
 
 ## Public and private distribution
 
@@ -89,6 +89,6 @@ The current PPT/PDF, LP DOCX/PDF, LG DOCX/PDF/Markdown and the whole lab tree ar
 
 ## Build and provenance
 
-[Build notes](BUILD.md) describe the source and rendering pipeline. The private original deck is required to rebuild its copied diagrams. [Image generation prompts](courseware/assets/image-prompts.md) record the generated illustration specifications.
+[Build notes](BUILD.md) describe the source and rendering pipeline. Reusable diagrams were cropped from the private original deck into [courseware/assets/reference-diagrams](courseware/assets/reference-diagrams/). The per-lab evidence figures in [courseware/assets/screenshots](courseware/assets/screenshots/) are generated with TShark by `scripts/build_evidence_visuals.py`. [Image generation prompts](courseware/assets/image-prompts.md) record the generated illustration specifications.
 
 Provided by **Tertiary Infotech Academy Pte Ltd**, Singapore.

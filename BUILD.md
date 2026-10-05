@@ -1,21 +1,31 @@
 # C1123 build notes
 
-Metadata and lab content: `scripts/course_content.py`, `scripts/prepare_course.py`, `.claude/skills/non-wsq-courseware-build/build/course_data.py` and the domain files. The current learner package is v4.0. The LP has four 09:30–18:30 days: 450 instructional minutes, 30 tea-break minutes and 60 lunch minutes per day.
+Single source: `.claude/skills/non-wsq-courseware-build/build/course_data.py` plus `data_domain1.py` … `data_domain18.py`. The current learner package is **v5.0**. Each of the four LP days runs 09:30–18:30 with 480 training minutes (tea breaks included, lunch excluded). The schedule is set per topic: concepts and demo, then the hands-on lab.
 
-The PPT builder copies the private original reference deck, retains useful concept diagrams/screenshots and integrates the current 18-topic sequence with new activity briefs. Superseded procedural teaching is carried by the detailed LG/labs instead. The original remains unchanged in reference/.
+Since v5.0 the deck is built by the house non-WSQ engine (`build_slides.py`), which is the same design system as C735 *Agentic AI with n8n*. It is no longer a patched copy of the legacy v3 deck. The local engine copy adds optional, data-driven hooks, all rendered with the engine's own components:
 
-Install Python dependencies from requirements.txt and LibreOffice. With the private reference deck present, run:
+- `TOPIC_SLIDES`: per-topic concept, diagram and text-plus-image slides.
+- `LAB_SHOTS` / `LAB_SHOT_KICKER`: an "Expected Evidence" packet-list figure per lab.
+- `DAY_START_TOPIC` / `BREAK_AFTER_TOPIC`: day dividers and tea/lunch break slides that mirror the LP.
+- `PORTAL_SHOT`: the LMS portal screenshot on the Download Course Material slide.
+
+Visual assets:
+
+- `courseware/assets/reference-diagrams/ref-NNN.png`: diagrams cropped from the private v3 reference deck by `scripts/extract_reference_diagrams.py`. It needs the reference deck in `reference/`.
+- `courseware/assets/screenshots/lab-NN-evidence.png`: produced by `scripts/build_evidence_visuals.py`. It runs TShark against each lab's own capture with the filters in `assets/checks.json`.
+
+Install the Python dependencies from requirements.txt, plus LibreOffice and Wireshark/TShark. Then run:
 
 ```bash
 bash .claude/skills/non-wsq-courseware-build/build/build_courseware.sh
 ```
 
-Run a lab fixture check from its own folder:
+To check a lab fixture, run this from the lab's own folder:
 
 ```bash
 python3 scripts/verify.py
 ```
 
-The optional lab data generator uses Scapy and OpenSSL without sending network traffic. It regenerates the synthetic TLS capture and matching session secrets together. Use `scripts/prepare_course.py` only when deliberately regenerating all lab fixtures; it overwrites mock datasets.
+The optional lab data generator uses Scapy and OpenSSL and sends no network traffic. It regenerates the synthetic TLS capture and its matching session secrets together. Use `scripts/prepare_course.py` only when you deliberately want to regenerate all lab fixtures, because it overwrites the mock datasets. `scripts/build_deck.py` (the v4.0 legacy-deck patcher) is superseded and no longer called.
 
-Technical sources checked 2 October 2026: official course syllabus; Wireshark User Guide capture/display filtering; Wireshark TLS Wiki. Actual fixture checks were executed with TShark 4.6.8. Diagram and screenshot provenance is in scripts/deck-provenance.json; mock-data provenance is in each lab data/README.md.
+Superseded deliverables are kept in `courseware/archive/`.

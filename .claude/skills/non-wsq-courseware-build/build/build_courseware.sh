@@ -33,7 +33,8 @@ PY
 CW="$REPO/courseware"
 
 echo "==> Generate PPT / LP / LG from the single source"
-python3 "$REPO/scripts/build_deck.py"
+python3 "$REPO/scripts/build_evidence_visuals.py"
+python3 "$HERE/build_slides.py"
 python3 "$HERE/build_lesson_plan.py"
 python3 "$HERE/build_learner_guide.py"
 

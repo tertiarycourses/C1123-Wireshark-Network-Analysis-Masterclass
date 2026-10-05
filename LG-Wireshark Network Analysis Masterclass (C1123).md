@@ -1,6 +1,6 @@
 # Wireshark Network Analysis Masterclass — Learner Guide
 
-**Course Code:** C1123  |  **Conducted by:** Tertiary Infotech Academy Pte Ltd (UEN 201200696W)  |  **Version v4.0 · 2 October 2026**
+**Course Code:** C1123  |  **Conducted by:** Tertiary Infotech Academy Pte Ltd (UEN 201200696W)  |  **Version v5.0 · 5 October 2026**
 
 ## Contents
 
@@ -51,7 +51,7 @@
 
 This guide supports C1123, a four-day, 30-hour commercial short course. It includes detailed instructions for 18 self-contained labs using supplied synthetic packet captures.
 
-The revised v4.0 deck starts from the supplied v3 reference presentation. Current lab instructions, data and scripts are supplied here; the legacy external trace names are not required for the new activities.
+Version 5.0 aligns the slides, this guide and the lesson plan with the Tertiary Infotech house design. Every lab ships with its own synthetic capture, templates and verification script; the Expected Evidence figure in each lab shows the packet list you should reproduce.
 
 
 ## Course Learning Outcomes
@@ -98,6 +98,10 @@ Establish a trace baseline
 - Packet list, protocol details and bytes connect a summary to the underlying evidence.
 - Record interface, timestamp precision, dropped packets and capture scope before interpreting a trace.
 
+![The TCP/IP and OSI Models — OSI layers mapped to the TCP/IP model](courseware/assets/reference-diagrams/ref-020.png)
+
+*The TCP/IP and OSI Models — OSI layers mapped to the TCP/IP model*
+
 
 ### Lab 1 — Establish a trace baseline
 
@@ -131,6 +135,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied arp expression matches 2 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 1 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-01-evidence.png)
+
+*Lab 1 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -157,6 +165,10 @@ Plan capture placement
 - A switched access port normally observes its own traffic and broadcasts; SPAN or TAP placement changes visibility.
 - Capture filters use libpcap syntax before packets are stored; display filters hide or show stored packets.
 - Bound file size and duration; check capture drops before attributing missing packets to network loss.
+
+![Where to Tap Into the Network — Choose the observation point before you capture](courseware/assets/reference-diagrams/ref-065.png)
+
+*Where to Tap Into the Network — Choose the observation point before you capture*
 
 
 ### Lab 2 — Plan capture placement
@@ -192,6 +204,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied tcp.port == 80 expression matches 37 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 2 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-02-evidence.png)
+
+*Lab 2 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -218,6 +234,10 @@ Create an analyst profile
 - A profile bundles reproducible columns, coloring rules and protocol settings.
 - Name resolution can obscure numeric evidence and generate additional traffic; document the setting.
 - Protocol heuristics and TCP analysis preferences change interpretation, not the stored bytes.
+
+![Configuration Profiles — Right-click the Profile area in the status bar to switch or create](courseware/assets/reference-diagrams/ref-048.png)
+
+*Configuration Profiles — Right-click the Profile area in the status bar to switch or create*
 
 
 ### Lab 3 — Create an analyst profile
@@ -253,6 +273,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied dns expression matches 6 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 3 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-03-evidence.png)
+
+*Lab 3 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -279,6 +303,10 @@ Color and annotate evidence
 - Color rules are applied in order; the first matching rule wins.
 - Temporary coloring is useful for a conversation; permanent rules support repeated triage.
 - Bookmarks and comments preserve the analyst path without changing the captured payload.
+
+![Colouring Rules — The coloring rules list is processed in order](courseware/assets/reference-diagrams/ref-115.png)
+
+*Colouring Rules — The coloring rules list is processed in order*
 
 
 ### Lab 4 — Color and annotate evidence
@@ -314,6 +342,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied http.response.code >= 400 expression matches 2 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 4 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-04-evidence.png)
+
+*Lab 4 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -340,6 +372,10 @@ Separate path and server delay
 - Displayed delta depends on the current filter; capture delta does not.
 - SYN to SYN/ACK gives an initial path-related sample; request to response includes application processing.
 - One-sided timestamps cannot identify exactly which intermediate device delayed or dropped a packet.
+
+![Time Display Formats — Precision depends on the capture hardware and file format](courseware/assets/reference-diagrams/ref-181.png)
+
+*Time Display Formats — Precision depends on the capture hardware and file format*
 
 
 ### Lab 5 — Separate path and server delay
@@ -375,6 +411,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied http.request.uri == "/slow" || http.response.code == 200 expression matches 3 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 5 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-05-evidence.png)
+
+*Lab 5 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -401,6 +441,10 @@ Summarize traffic and a voice stream
 - Protocol Hierarchy shows captured composition; byte share differs from packet share.
 - Conversations and Endpoints identify concentration; they do not alone prove malicious activity.
 - SIP signals a call while RTP carries media; jitter, loss and codec interpretation need stream context.
+
+![Capture File Properties — Statistics | Protocol Hierarchy shows the protocol mix](courseware/assets/reference-diagrams/ref-209.png)
+
+*Capture File Properties — Statistics | Protocol Hierarchy shows the protocol mix*
 
 
 ### Lab 6 — Summarize traffic and a voice stream
@@ -436,6 +480,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied sip expression matches 2 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 6 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-06-evidence.png)
+
+*Lab 6 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -462,6 +510,10 @@ Build a filter evidence matrix
 - Parentheses make mixed and/or expressions explicit.
 - Field existence and Boolean equality differ: tcp.flags.syn == 1 tests the bit.
 - Since Wireshark 3.6, != uses all-not-equal semantics; historical slides describing any-not-equal are obsolete.
+
+![Display Filter Operators — Comparison operators with C-like and English forms](courseware/assets/reference-diagrams/ref-088.png)
+
+*Display Filter Operators — Comparison operators with C-like and English forms*
 
 
 ### Lab 7 — Build a filter evidence matrix
@@ -497,6 +549,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied dns.flags.rcode == 3 expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 7 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-07-evidence.png)
+
+*Lab 7 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -523,6 +579,10 @@ Reconstruct an application dependency chain
 - ARP resolves a local next-hop MAC; DNS resolves a name to an address.
 - The destination IP stays end-to-end across routing while link-layer addresses change per hop.
 - Resolution, connection establishment and application exchange form a dependency chain.
+
+![The TCP/IP Protocol Suite — Where common protocols sit](courseware/assets/reference-diagrams/ref-022.png)
+
+*The TCP/IP Protocol Suite — Where common protocols sit*
 
 
 ### Lab 8 — Reconstruct an application dependency chain
@@ -558,6 +618,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied dns.qry.name == "portal.example.test" expression matches 2 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 8 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-08-evidence.png)
+
+*Lab 8 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -584,6 +648,10 @@ Diagnose DNS failure and delay
 - Transaction ID plus addresses and ports pair a query with its response.
 - NXDOMAIN reports that a name does not exist; it differs from silence or timeout.
 - DNS response time is a measured exchange, influenced by resolver and path behaviour.
+
+![How DNS Works — Name resolution through a local resolver](courseware/assets/reference-diagrams/ref-028.png)
+
+*How DNS Works — Name resolution through a local resolver*
 
 
 ### Lab 9 — Diagnose DNS failure and delay
@@ -618,6 +686,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 **Test it**
 
 The supplied dns.flags.rcode == 3 expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
+
+![Lab 9 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-09-evidence.png)
+
+*Lab 9 expected evidence — the packet list your filter should produce*
 
 **Troubleshooting**
 
@@ -680,6 +752,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied arp.opcode == 2 expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 10 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-10-evidence.png)
+
+*Lab 10 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -706,6 +782,10 @@ Classify IPv4 scope and headers
 - TTL limits forwarding hops; it is not a latency measurement.
 - Broadcast and multicast use different addressing scopes and delivery rules.
 - Fragmentation fields describe packet handling; missing fragments can reflect capture limitations.
+
+![IPv4 Header Essentials — Header layout (TCP header shown; IPv4 uses the same 32-bit rows)](courseware/assets/reference-diagrams/ref-137.png)
+
+*IPv4 Header Essentials — Header layout (TCP header shown; IPv4 uses the same 32-bit rows)*
 
 
 ### Lab 11 — Classify IPv4 scope and headers
@@ -740,6 +820,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 **Test it**
 
 The supplied ip.dst == 224.0.0.1 expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
+
+![Lab 11 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-11-evidence.png)
+
+*Lab 11 expected evidence — the packet list your filter should produce*
 
 **Troubleshooting**
 
@@ -802,6 +886,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied icmp.type == 3 && icmp.code == 3 expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 12 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-12-evidence.png)
+
+*Lab 12 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -828,6 +916,10 @@ Follow datagrams and service refusal
 - UDP has no transport handshake or retransmission; the application may provide reliability.
 - A port number is a decoding hint; payload and context identify the application.
 - Following a UDP stream collects datagrams and does not invent missing data.
+
+![TCP vs UDP — Header and feature comparison](courseware/assets/reference-diagrams/ref-141.png)
+
+*TCP vs UDP — Header and feature comparison*
 
 
 ### Lab 13 — Follow datagrams and service refusal
@@ -863,6 +955,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied udp.dstport == 9999 expression matches 2 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 13 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-13-evidence.png)
+
+*Lab 13 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -889,6 +985,10 @@ Investigate retransmission and zero window
 - Sequence numbers count bytes; ACK numbers indicate the next expected byte.
 - Retransmission and duplicate ACK labels are heuristics sensitive to capture placement and completeness.
 - Zero window indicates receive-side flow control; it is distinct from network congestion.
+
+![The Three-Way Handshake — Connection establishment](courseware/assets/reference-diagrams/ref-138.png)
+
+*The Three-Way Handshake — Connection establishment*
 
 
 ### Lab 14 — Investigate retransmission and zero window
@@ -924,6 +1024,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied tcp.analysis.retransmission expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 14 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-14-evidence.png)
+
+*Lab 14 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -950,6 +1054,10 @@ Graph bytes, RTT and recovery
 - An I/O graph bins observed events; units and interval determine what it means.
 - TCP time-sequence graphs show byte progress, stalls and repeated sequence ranges.
 - RTT samples, application response time and throughput answer different questions.
+
+![I/O Graphs — Multiple graphs with different filters on one chart](courseware/assets/reference-diagrams/ref-251.png)
+
+*I/O Graphs — Multiple graphs with different filters on one chart*
 
 
 ### Lab 15 — Graph bytes, RTT and recovery
@@ -985,6 +1093,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied tcp.analysis.retransmission || tcp.analysis.zero_window expression matches 2 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 15 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-15-evidence.png)
+
+*Lab 15 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -1011,6 +1123,10 @@ Inspect HTTP outcomes and HTTP/2 frames
 - HTTP response codes describe application outcomes after transport delivery.
 - A response time contains more than network latency; pair the correct request and response.
 - HTTP/2 multiplexes frames; encrypted HTTP/2 needs authorised TLS secrets to inspect payload.
+
+![Follow the Stream — Follow Stream reassembles the transferred data](courseware/assets/reference-diagrams/ref-240.png)
+
+*Follow the Stream — Follow Stream reassembles the transferred data*
 
 
 ### Lab 16 — Inspect HTTP outcomes and HTTP/2 frames
@@ -1045,6 +1161,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 **Test it**
 
 The supplied http.response.code >= 400 expression matches 2 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
+
+![Lab 16 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-16-evidence.png)
+
+*Lab 16 expected evidence — the packet list your filter should produce*
 
 **Troubleshooting**
 
@@ -1107,6 +1227,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 
 The supplied tls.handshake.type == 1 expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
 
+![Lab 17 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-17-evidence.png)
+
+*Lab 17 expected evidence — the packet list your filter should produce*
+
 **Troubleshooting**
 
 TShark not found: install Wireshark CLI tools and add the installation folder to PATH; on Windows use the Wireshark install directory. A filter returns zero: clear other filters, use the specified capture, and check the expression is in the display toolbar. TLS remains opaque: select the matching lab-tls.keys file by absolute path, reload, and remove a key-log preference from another lab.
@@ -1133,6 +1257,10 @@ Produce an evidence-led incident report
 - Begin with scope and a baseline, then focus with endpoints, filters, time and graphs.
 - Separate observed facts from hypotheses and specify what new evidence would test them.
 - A useful report states affected flow, measurement, impact, recommended action and uncertainty.
+
+![Export and Preserve Evidence — File | Export Packet Dissections](courseware/assets/reference-diagrams/ref-248.png)
+
+*Export and Preserve Evidence — File | Export Packet Dissections*
 
 
 ### Lab 18 — Produce an evidence-led incident report
@@ -1167,6 +1295,10 @@ Evidence CSV and packet findings   (Tools: Wireshark, TShark, Python.)
 **Test it**
 
 The supplied http.response.code == 500 expression matches 1 frame(s) in the specified capture. Run scripts/verify.py and compare the listed frame numbers. Keep your findings and exported table in outputs/. Explain the observed result rather than only copying a count.
+
+![Lab 18 expected evidence — the packet list your filter should produce](courseware/assets/screenshots/lab-18-evidence.png)
+
+*Lab 18 expected evidence — the packet list your filter should produce*
 
 **Troubleshooting**
 
